@@ -1,3 +1,3 @@
 # Mailjs
 
-A python wrapper around the mail.tm web api.
+A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.
