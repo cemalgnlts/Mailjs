@@ -64,6 +64,15 @@ class Mailjs
     }
 
     /**
+     * Retrieves a Account resource.
+     * @param {String} accountId Resource identifier
+     * @returns 
+     */
+     async getAccount(accountId) {
+        return this.send_("/accounts/" + accountId);
+    }
+
+    /**
      * Deletes the Account resource.
      * @param {String} accountId Resource identifier
      */
@@ -181,5 +190,3 @@ class Mailjs
         };
     }
 }
-
-const mailjs = new Mailjs();
