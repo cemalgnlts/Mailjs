@@ -5,6 +5,57 @@ A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.
 
 If the request is sent correctly, `status` returns true. If it returns incorrect, the `status` will be false and the `message` in the data is also added.
 
+# Domain
+
+## List Domains
+
+```js
+mailjs.getDomains()
+  .then(console.log)
+```
+
+### Success result
+
+```json
+{
+  "status": true,
+  "data": [
+    {
+      "id": "123456",
+      "domain": "example.com",
+      "isActive": true,
+      "isPrivate": false,
+      "createdAt": "2021-05-10T00:00:00+00:00",
+      "updatedAt": "2021-05-11T00:00:00+00:00"
+    }
+  ]
+}
+```
+
+## Get Domain
+```js
+mailjs.getDomain("[domain id]")
+  .then(console.log)
+```
+
+### Success result
+
+```json
+{
+  "status": true,
+  "data": {
+    "id": "123456",
+    "domain": "example.com",
+    "isActive": true,
+    "isPrivate": false,
+    "createdAt": "2021-05-10T00:00:00+00:00",
+    "updatedAt": "2021-05-11T00:00:00+00:00"
+  }
+}
+```
+
+---
+
 # Account
 
 ## Create Account
@@ -95,7 +146,7 @@ mailjs.deleteMe()
 You can also use the id to access the user's information and delete their account.
 
 ```js
-mailjs.delete("[account id]")
+mailjs.deleteAccount("[account id]")
   .then(console.log)
 ```
 
