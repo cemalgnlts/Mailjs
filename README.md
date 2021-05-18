@@ -2,6 +2,7 @@
 
 A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.
 
+Probably one of the best API for creating temporary email accounts
 
 If the request is sent correctly, `status` returns true. If it returns incorrect, the `status` will be false and the `message` in the data is also added.
 
