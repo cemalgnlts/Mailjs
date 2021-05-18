@@ -1,4 +1,4 @@
-Download `Mail.js` class.
+Download `Mailjs.js` class.
 
 Edit first and last line:
 
