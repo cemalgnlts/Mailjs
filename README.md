@@ -91,3 +91,15 @@ mailjs.deleteMe()
   "data": {}
 }
 ```
+
+You can also use the id to access the user's information and delete their account.
+
+```js
+mailjs.delete("[account id]")
+  .then(console.log)
+```
+
+```js
+mailjs.getAccount("[account id]")
+  .then(console.log)
+```
