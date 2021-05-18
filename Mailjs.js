@@ -3,6 +3,7 @@
  * V1 - 18 MAY 2021
  * https://mail.tm/
  * A JavaScript class around the mail.tm web api.
+ * https://github.com/cemalgnlts/Mailjs
  */
 class Mailjs 
 {
