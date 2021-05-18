@@ -33,6 +33,7 @@ mailjs.getDomains()
 ```
 
 ## Get Domain
+
 ```js
 mailjs.getDomain("[domain id]")
   .then(console.log)
@@ -59,6 +60,7 @@ mailjs.getDomain("[domain id]")
 # Account
 
 ## Create Account
+
 ```js
 mailjs.register("user@example.com", "password")
   .then(console.log)
@@ -152,5 +154,47 @@ mailjs.deleteAccount("[account id]")
 
 ```js
 mailjs.getAccount("[account id]")
+  .then(console.log)
+```
+
+---
+
+## Message
+
+### List messages
+
+```js
+mailjs.listMessages()
+  .then(console.log)
+```
+
+
+### Read a message
+
+```js
+mailjs.getMessage("[message id]")
+  .then(console.log)
+```
+
+### Delete a message
+
+```js
+mailjs.deleteMessage("[message id]")
+  .then(console.log)
+```
+
+### Mark as readed a message
+
+```js
+mailjs.makeSeenTrue("[message id]")
+  .then(console.log)
+```
+
+# Source
+
+## Get source
+
+```js
+mailjs.getSource("[message id]")
   .then(console.log)
 ```
