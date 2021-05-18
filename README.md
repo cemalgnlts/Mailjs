@@ -10,7 +10,7 @@ A successfull response example:
 
 ```json
 {
-  "status": false,
+  "status": true,
   "message": "ok",
   "data": ...
 }
