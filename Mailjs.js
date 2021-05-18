@@ -153,7 +153,7 @@ class Mailjs
      * Retrieves a Source resource.
      * @param {String} sourceId Resource identifier
      */
-    async getSources(sourceId) {
+    async getSource(sourceId) {
         return this.send_("/sources/" + sourceId);
     }
 
