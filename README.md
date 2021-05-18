@@ -5,6 +5,32 @@ A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.
 
 If the request is sent correctly, `status` returns true. If it returns incorrect, the `status` will be false and the `message` in the data is also added.
 
+A successfull response example:
+
+```json
+{
+  "status": false,
+  "message": "ok",
+  "data": ...
+}
+```
+
+A failed response example:
+
+```json
+{
+  "status": false,
+  "message": "Invalid credentials.",
+  "data": ...
+}
+```
+
+To see all results, check out the API page: [https://api.mail.tm/](https://api.mail.tm/)
+
+User needs to login to access JWT token. Registration does not return this information, log in after registration.
+
+
+After the login process, the user's JWT token and ID are assigned to `mailjs.token` and `mailjs.id`
 
 ---
 
