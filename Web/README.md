@@ -2,8 +2,12 @@
 
 You can link directly to the latest version by adding the following script tag inside your head tags:
 
+```
+https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs/Mailjs.min.js
+```
+
 ```html
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@master/Mailjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs/Mailjs.min.js"></script>
 ```
 
 # Demo
