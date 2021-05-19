@@ -202,7 +202,7 @@ class Mailjs
      * @private
      */
     function makeHash_(size) {
-        Array.apply(0, Array(size))
+        return Array.apply(0, Array(size))
             .map(function () {
                 return (function (charset) {
                     return charset.charAt(Math.floor(Math.random() * charset.length));
