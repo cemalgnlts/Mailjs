@@ -174,14 +174,14 @@ class Mailjs
         
         // Third generate a password and register.
         const password = this.makeHash_(8);
-        let registerRes = this.register(username, password);
+        let registerRes = await this.register(username, password);
         if(!registerRes.status)
             return registerRes;
         else
             registerRes = registerRes.data;
         
         // Fourth login.
-        let loginRes = this.login(username, password);
+        let loginRes = await this.login(username, password);
         if(!loginRes.status)
             return loginRes;
         else
