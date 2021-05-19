@@ -18,7 +18,7 @@ const mailjs = new Mailjs()
 
 # Demo
 
-```
+```js
 const Mailjs = require("./Mailjs")
 
 const mailjs = new Mailjs()
