@@ -3,7 +3,7 @@ Download `Mailjs.js` class.
 
 install node-fetch:
 
-```bash
+```sh
 npm install node-fetch
 ```
 
