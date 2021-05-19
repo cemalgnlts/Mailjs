@@ -17,7 +17,7 @@ https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs/Mailjs.min.js
 <html>
     <head>
         <title>Page Title</title>
-        <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@master/Mailjs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs/Mailjs.min.js"></script>
     </head>
     <body onload="onLoad()">
         <p>
