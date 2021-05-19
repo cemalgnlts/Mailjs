@@ -201,7 +201,7 @@ class Mailjs
      * @param {Number} size Hash size.
      * @private
      */
-    function makeHash_(size) {
+    makeHash_(size) {
         return Array.apply(0, Array(size))
             .map(function () {
                 return (function (charset) {
