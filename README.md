@@ -139,3 +139,26 @@ mailjs.makeSeenTrue("[message id]")
 mailjs.getSource("[message id]")
   .then(console.log)
 ```
+
+# Helper Methods
+
+## Create random account.
+
+Creates and logs in an account with a random username and password.
+
+```js
+mailjs.createOneAccount()
+  .then(console.log);
+```
+
+### Response
+
+```json
+{
+  "status": true,
+  "data": {
+    "username": "user@example.com",
+    "password": "my-password"
+  }
+}
+```
