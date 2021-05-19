@@ -206,7 +206,7 @@ class Mailjs
             .map(function () {
                 return (function (charset) {
                     return charset.charAt(Math.floor(Math.random() * charset.length));
-                })("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+                })("abcdefghijklmnopqrstuvwxyz0123456789");
             })
             .join("");
     }
