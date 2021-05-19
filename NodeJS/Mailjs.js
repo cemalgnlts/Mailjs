@@ -158,6 +158,60 @@ class Mailjs
     async getSource(sourceId) {
         return this.send_("/sources/" + sourceId);
     }
+    
+    /***** Helper *****/
+    
+    async createOneAccount() {
+        // First create a name.
+        let name = this.makeHash_(5);
+        
+        // Second get a domain name.
+        let domain = await this.getDomains();
+        if(!domain.status)
+            return domain;
+        else
+            domain = domain.data[0].domain;
+        
+        const username = `${name}@${domain}`;
+        
+        // Third generate a password and register.
+        const password = this.makeHash_(8);
+        let registerRes = await this.register(username, password);
+        if(!registerRes.status)
+            return registerRes;
+        else
+            registerRes = registerRes.data;
+        
+        // Fourth login.
+        let loginRes = await this.login(username, password);
+        if(!loginRes.status)
+            return loginRes;
+        else
+            loginRes = loginRes.data;
+        
+        return {
+            status: true,
+            data: {
+                username,
+                password
+            }
+        }
+    }
+    
+    /**
+     * https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript/14944262#14944262
+     * @param {Number} size Hash size.
+     * @private
+     */
+    makeHash_(size) {
+        return Array.apply(0, Array(size))
+            .map(function () {
+                return (function (charset) {
+                    return charset.charAt(Math.floor(Math.random() * charset.length));
+                })("abcdefghijklmnopqrstuvwxyz0123456789");
+            })
+            .join("");
+    }
 
     /** @private */
     async send_(path, method = "GET", body) {
