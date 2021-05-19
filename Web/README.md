@@ -1,4 +1,4 @@
-# Include Mailjs into your project.
+# Include Into Your Project
 
 You can link directly to the latest version by adding the following script tag inside your head tags:
 
