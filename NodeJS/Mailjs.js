@@ -116,7 +116,7 @@ class Mailjs
      * @param {Number} page The collection page number (Default: 1)
      * @returns 
      */
-    async listMessages(page = 1) {
+    async getMessages(page = 1) {
         return this.send_(`/messages?page=${page}`);
     }
 
@@ -138,15 +138,12 @@ class Mailjs
     }
 
     /**
-     * Updates the Message seen to true.
-     * @param {Number} messageId Resource identifier
+     * Sets a message as read or unread.
+     * @param {String} messageId Resource identifier
+     * @param {Boolean} seen Default true
      */
-    async makeSeenTrue(messageId) {
-        const data = {
-            seen: true
-        };
-
-        return this.send_("/messages/" + messageId, "PATCH", data)
+    async setMessageSeen(messageId, seen = true) {
+        return this.send_("/messages/" + messageId, "PATCH", { seen })
     }
 
     /***** Source *****/
