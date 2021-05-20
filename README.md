@@ -105,7 +105,7 @@ mailjs.getAccount("[account id]")
 ### List messages
 
 ```js
-mailjs.listMessages()
+mailjs.getMessages()
   .then(console.log)
 ```
 
@@ -124,10 +124,11 @@ mailjs.deleteMessage("[message id]")
   .then(console.log)
 ```
 
-### Mark as readed a message
+### Make a message readed or unreaded.
+`true` for make readed. `false` for make unreaded.
 
 ```js
-mailjs.makeSeenTrue("[message id]")
+mailjs.setMessageSeen("[message id]", true)
   .then(console.log)
 ```
 
