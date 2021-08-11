@@ -1,5 +1,7 @@
 # Include Into Your Project
 
+[![](https://data.jsdelivr.com/v1/package/gh/cemalgnlts/Mailjs/badge)](https://www.jsdelivr.com/package/gh/cemalgnlts/Mailjs)
+
 You can link directly to the latest version by adding the following script tag inside your head tags:
 
 ```
