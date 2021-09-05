@@ -1,14 +1,12 @@
 # Include Into Your Project
 
-Download `Mailjs.js` class.
-
 install mailjs:
 
 ```bash
 npm install @cemalgnlts/mailjs
 ```
 
-Add it to the class you want to use.
+Import the package.
 
 ```js
 const Mailjs = require("@cemalgnlts/mailjs");
