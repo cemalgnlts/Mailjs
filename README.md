@@ -2,7 +2,23 @@
 
 A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.
 
-Probably one of the best API for creating temporary email accounts
+Probably one of the best API for creating temporary email accounts.
+
+## Installation
+
+### NPM
+
+```bash
+npm install @cemalgnlts/mailjs
+```
+
+### CDN
+
+```
+https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/Mailjs.min.js
+```
+
+# Documentation
 
 Returns a Promise object after the function is called. If the request is sent correctly, `status` returns true. If it returns incorrect, the `status` will be false and the `message` in the data is also added.
 
@@ -36,16 +52,16 @@ After the login process, the user's JWT token and ID are assigned to `mailjs.tok
 ---
 
 
-# Domain
+## Domain
 
-## List Domains
+### List Domains
 
 ```js
 mailjs.getDomains()
   .then(console.log)
 ```
 
-## Get Domain
+### Get Domain
 
 ```js
 mailjs.getDomain("[domain id]")
@@ -54,16 +70,16 @@ mailjs.getDomain("[domain id]")
 
 ---
 
-# Account
+## Account
 
-## Create Account
+### Create Account
 
 ```js
 mailjs.register("user@example.com", "password")
   .then(console.log)
 ```
 
-## Login
+### Login
 
 `mailjs.token` and `mailjs.id` can be used to access the user token and id later.
 
@@ -72,14 +88,14 @@ mailjs.login("user@example.com", "password")
   .then(console.log)
 ```
 
-## Get Account Data
+### Get Account Data
 
 ```js
 mailjs.me()
   .then(console.log)
 ```
 
-## Delete Account
+### Delete Account
 
 ```js
 mailjs.deleteMe()
@@ -100,9 +116,9 @@ mailjs.getAccount("[account id]")
 
 ---
 
-## Message
+### Message
 
-### List messages
+#### List messages
 
 ```js
 mailjs.getMessages()
@@ -110,21 +126,21 @@ mailjs.getMessages()
 ```
 
 
-### Read a message
+#### Read a message
 
 ```js
 mailjs.getMessage("[message id]")
   .then(console.log)
 ```
 
-### Delete a message
+#### Delete a message
 
 ```js
 mailjs.deleteMessage("[message id]")
   .then(console.log)
 ```
 
-### Make a message readed or unreaded.
+#### Make a message readed or unreaded.
 `true` for make readed. `false` for make unreaded.
 
 ```js
@@ -132,18 +148,18 @@ mailjs.setMessageSeen("[message id]", true)
   .then(console.log)
 ```
 
-# Source
+## Source
 
-## Get source
+### Get source
 
 ```js
 mailjs.getSource("[message id]")
   .then(console.log)
 ```
 
-# Helper Methods
+## Helper Methods
 
-## Create random account.
+### Create random account.
 
 Creates and logs in an account with a random username and password.
 
@@ -152,7 +168,7 @@ mailjs.createOneAccount()
   .then(console.log);
 ```
 
-### Response
+#### Response
 
 ```json
 {
