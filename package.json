@@ -1,5 +1,5 @@
 {
-  "name": "mailjs",
+  "name": "@cemalgnlts/mailjs",
   "version": "1.0.0",
   "description": "A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.",
   "main": "Mailjs.js",
