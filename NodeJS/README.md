@@ -2,16 +2,16 @@
 
 Download `Mailjs.js` class.
 
-install node-fetch:
+install mailjs:
 
-```sh
-npm install node-fetch
+```bash
+npm install @cemalgnlts/mailjs
 ```
 
 Add it to the class you want to use.
 
 ```js
-const Mailjs = require("./Mailjs");
+const Mailjs = require("@cemalgnlts/mailjs");
 
 const mailjs = new Mailjs();
 ```
@@ -19,7 +19,7 @@ const mailjs = new Mailjs();
 # Demo
 
 ```js
-const Mailjs = require("./Mailjs");
+const Mailjs = require("@cemalgnlts/mailjs");
 
 const mailjs = new Mailjs();
 
