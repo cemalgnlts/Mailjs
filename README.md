@@ -4,15 +4,15 @@ A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.
 
 Probably one of the best API for creating temporary email accounts.
 
-## Installation
+# Installation
 
-### NPM
+## NPM
 
 ```bash
 npm install @cemalgnlts/mailjs
 ```
 
-### CDN
+## CDN
 
 ```
 https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/Mailjs.min.js
@@ -116,9 +116,9 @@ mailjs.getAccount("[account id]")
 
 ---
 
-### Message
+## Message
 
-#### List messages
+### List messages
 
 ```js
 mailjs.getMessages()
@@ -126,21 +126,21 @@ mailjs.getMessages()
 ```
 
 
-#### Read a message
+### Read a message
 
 ```js
 mailjs.getMessage("[message id]")
   .then(console.log)
 ```
 
-#### Delete a message
+### Delete a message
 
 ```js
 mailjs.deleteMessage("[message id]")
   .then(console.log)
 ```
 
-#### Make a message readed or unreaded.
+### Make a message readed or unreaded.
 `true` for make readed. `false` for make unreaded.
 
 ```js
