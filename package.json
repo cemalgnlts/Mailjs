@@ -1,18 +1,32 @@
 {
   "name": "@cemalgnlts/mailjs",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.",
-  "main": "NodeJS/Mailjs.js",
+  "main": "./dist/mailjs.cjs.js",
+  "module": "./dist/mailjs.es.js",
+  "types": "./dist/main.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/mailjs.es.js",
+      "require": "./dist/mailjs.cjs.js"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rimraf dist mailjs.min.js && rollup --config"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cemalgnlts/Mailjs.git"
   },
-  "keywords": ["mail", "temp-mail"],
-  "files": ["README.md"],
-  "author": "",
+  "keywords": [
+    "mail",
+    "temp-mail"
+  ],
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "author": "Cemal",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/cemalgnlts/Mailjs/issues"
@@ -20,5 +34,13 @@
   "homepage": "https://github.com/cemalgnlts/Mailjs#readme",
   "dependencies": {
     "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^8.3.2",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.70.2",
+    "rollup-plugin-uglify": "^6.0.4",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.3"
   }
 }
