@@ -1,14 +1,21 @@
 # Include Into Your Project
 
-install mailjs:
+Install mailjs:
 
-```bash
+```sh
 npm install @cemalgnlts/mailjs
 ```
 
-Import the package.
+or
+
+```sh
+yarn add @cemalgnlts/mailjs
+```
+
+Import the package:
 
 ```js
+// import Mailjs from "@cemalgnlts/mailjs";
 const Mailjs = require("@cemalgnlts/mailjs");
 
 const mailjs = new Mailjs();

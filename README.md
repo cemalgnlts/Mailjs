@@ -4,18 +4,25 @@ A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.
 
 Probably one of the best API for creating temporary email accounts.
 
+* Usage of our API for illegal activity is strictly prohibited.
+* It is forbidden to sell programs or earn from it that exclusively uses our API (for example, creating a competing temp mail client and charging for it's usage).
+* The general quota limit is 8 queries per second (QPS) per IP address.
+
 # Installation
 
-## NPM
-
-```bash
+**npm**
+```sh
 npm install @cemalgnlts/mailjs
 ```
 
-## CDN
-
+**yarn**
+```sh
+yarn add @cemalgnlts/mailjs
 ```
-https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/Mailjs.min.js
+
+**CDN**
+```
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
 ```
 
 # Documentation
@@ -51,18 +58,15 @@ After the login process, the user's JWT token and ID are assigned to `mailjs.tok
 
 ---
 
-
 ## Domain
 
 ### List Domains
-
 ```js
 mailjs.getDomains()
   .then(console.log)
 ```
 
 ### Get Domain
-
 ```js
 mailjs.getDomain("[domain id]")
   .then(console.log)
@@ -73,7 +77,6 @@ mailjs.getDomain("[domain id]")
 ## Account
 
 ### Create Account
-
 ```js
 mailjs.register("user@example.com", "password")
   .then(console.log)
@@ -89,14 +92,12 @@ mailjs.login("user@example.com", "password")
 ```
 
 ### Get Account Data
-
 ```js
 mailjs.me()
   .then(console.log)
 ```
 
 ### Delete Account
-
 ```js
 mailjs.deleteMe()
   .then(console.log)
@@ -119,6 +120,7 @@ mailjs.getAccount("[account id]")
 ## Message
 
 ### List messages
+Gets all the Message resources of a given page.
 
 ```js
 mailjs.getMessages()
@@ -127,6 +129,7 @@ mailjs.getMessages()
 
 
 ### Read a message
+Retrieves a Message resource with a specific id (It has way more information than a message retrieved with GET /messages but it hasn't the "intro" member)
 
 ```js
 mailjs.getMessage("[message id]")
@@ -134,7 +137,6 @@ mailjs.getMessage("[message id]")
 ```
 
 ### Delete a message
-
 ```js
 mailjs.deleteMessage("[message id]")
   .then(console.log)
@@ -151,6 +153,7 @@ mailjs.setMessageSeen("[message id]", true)
 ## Source
 
 ### Get source
+Gets a Message's Source resource (If you don't know what this is, you either don't really want to use it or you should [read this!](https://en.wikipedia.org/wiki/Email#Plain_text_and_HTML))
 
 ```js
 mailjs.getSource("[message id]")
@@ -179,3 +182,6 @@ mailjs.createOneAccount()
   }
 }
 ```
+
+# Questions and suggestions
+If you have any questions or suggestions, please contact us via email [mailto:support@mail.tm](support@mail.tm) or [https://discord.gg/mail](discord).

@@ -2,13 +2,13 @@
   "name": "@cemalgnlts/mailjs",
   "version": "2.0.0",
   "description": "A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.",
-  "main": "./dist/mailjs.cjs.js",
-  "module": "./dist/mailjs.es.js",
-  "types": "./dist/main.d.ts",
+  "main": "dist/mailjs.js",
+  "module": "dist/mailjs.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/mailjs.es.js",
-      "require": "./dist/mailjs.cjs.js"
+      "import": "./dist/mailjs.mjs",
+      "require": "./dist/mailjs.js"
     }
   },
   "scripts": {

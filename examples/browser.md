@@ -5,11 +5,11 @@
 You can link directly to the latest version by adding the following script tag inside your head tags:
 
 ```
-https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@1.0/Mailjs.min.js
+https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@1.0/Mailjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.0/mailjs.min.js"></script>
 ```
 
 # Demo
@@ -19,7 +19,7 @@ https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@1.0/Mailjs.min.js
 <html>
     <head>
         <title>Page Title</title>
-        <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@1.0/Mailjs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.0/mailjs.min.js"></script>
     </head>
     <body>
         <p>
@@ -29,7 +29,7 @@ https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@1.0/Mailjs.min.js
         <script>
             const mailjs = new Mailjs();
             mailjs.getDomains().then((res) => {
-                console.log(res)
+                console.log(res);
                 document.querySelector("#domain").innerText = res.data[0].domain;
             });
         </script>
