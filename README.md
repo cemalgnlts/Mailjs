@@ -183,5 +183,5 @@ mailjs.createOneAccount()
 }
 ```
 
-# Questions and suggestions
-If you have any questions or suggestions, please contact us via email [mailto:support@mail.tm](support@mail.tm) or [https://discord.gg/mail](discord).
+# Questions And Suggestions
+If you have any questions or suggestions, please contact us via email [support@mail.tm](mailto:support@mail.tm) or [discord](https://discord.gg/mail).
