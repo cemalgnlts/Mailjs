@@ -9,6 +9,8 @@ declare class Mailjs {
     register(address: string, password: string): type.RegisterResult;
     /** Get an Account resource by its id. */
     login(address: string, password: string): type.LoginResult;
+    /** Login with user JWT token */
+    loginWithToken(token: string): type.AccountResult;
     /** Retrieves a Account resource. */
     me(): type.AccountResult;
     /** Retrieves a Account resource. */

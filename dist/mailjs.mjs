@@ -30,6 +30,16 @@ class Mailjs {
         }
         return res;
     }
+    /** Login with user JWT token */
+    async loginWithToken(token) {
+        this.token = token;
+        const res = await this.me();
+        if (!res.status)
+            throw new Error(res.message);
+        this.id = res.data.id;
+        this.address = res.data.address;
+        return res;
+    }
     /** Retrieves a Account resource. */
     me() {
         return this.send_("/me");

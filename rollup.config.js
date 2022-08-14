@@ -18,6 +18,7 @@ export default {
 			file: "./mailjs.min.js",
 			format: "iife",
 			name: "Mailjs",
+			interop: false,
 			globals: {
 				"node-fetch": "fetch"
 			},
