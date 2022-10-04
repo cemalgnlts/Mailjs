@@ -91,6 +91,15 @@ mailjs.login("user@example.com", "password")
   .then(console.log)
 ```
 
+### Login With Token
+
+If you use the JWT token stored in `mailjs.token` after login, it will allow you to login without username and password.
+
+```js
+mailjs.loginWithToken("eyJ0eXAiO...")
+  .then(console.log)
+```
+
 ### Get Account Data
 ```js
 mailjs.me()
