@@ -109,7 +109,7 @@ interface ISourceResource {
   data: string;
 }
 
-export type CreateOneAccoutResult = Promise<
+export type CreateOneAccountResult = Promise<
   | DomainResult
   | RegisterResult
   | LoginResult

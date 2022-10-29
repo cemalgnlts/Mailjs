@@ -122,7 +122,7 @@ class Mailjs {
   // Helper
 
   /** Create random account. */
-  async createOneAccount(): type.CreateOneAccoutResult {
+  async createOneAccount(): type.CreateOneAccountResult {
     // 1) Get a domain name.
     let domain: any = await this.getDomains();
     if (!domain.status) return domain;

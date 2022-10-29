@@ -34,7 +34,7 @@ declare class Mailjs {
     /** Gets a Message's Source resource */
     getSource(sourceId: string): type.SourceResult;
     /** Create random account. */
-    createOneAccount(): type.CreateOneAccoutResult;
+    createOneAccount(): type.CreateOneAccountResult;
     /**
      * https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript/14944262#14944262
      * @private

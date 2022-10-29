@@ -98,7 +98,7 @@ interface ISourceResource {
     downloadUrl: string;
     data: string;
 }
-export declare type CreateOneAccoutResult = Promise<DomainResult | RegisterResult | LoginResult | {
+export declare type CreateOneAccountResult = Promise<DomainResult | RegisterResult | LoginResult | {
     status: boolean;
     data: {
         username: string;
