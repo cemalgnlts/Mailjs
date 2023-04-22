@@ -3,7 +3,7 @@ import { uglify } from "rollup-plugin-uglify";
 
 export default {
 	input: "src/index.ts",
-	external: "node-fetch",
+	external: ["node-fetch" , "eventsource"],
 	output: [
 		{
 			file: "dist/mailjs.mjs",
@@ -20,7 +20,8 @@ export default {
 			name: "Mailjs",
 			interop: false,
 			globals: {
-				"node-fetch": "fetch"
+				"node-fetch": "fetch",
+				"eventsource" : "EventSourcePolyfill"
 			},
 			plugins: [uglify()]
 		}

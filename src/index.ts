@@ -1,14 +1,21 @@
 import fetch from "node-fetch";
+import EventSource from "eventsource";
 import type * as type from "./types";
 
 class Mailjs {
+  private events: object;
   private baseUrl: string;
+  private baseMercure: string;
+  private listener: any;
   private token: string;
   id: string;
   address: string;
 
   constructor() {
     this.baseUrl = "https://api.mail.tm";
+    this.baseMercure = "https://mercure.mail.tm/.well-known/mercure";
+    this.listener = null;
+    this.events = {};
     this.token = "";
     this.id = "";
     this.address = "";
@@ -91,6 +98,50 @@ class Mailjs {
   }
 
   // Message
+
+  /** open an eventlistener to messages and error */
+  on(event:string , callback: any){
+
+    const allowedEvents = ["seen" , "delete" , "arrive" , "error" , "ready"];
+    // Checking if valid events 
+    if(!allowedEvents.includes(event)){
+      return;
+    }
+
+    if(!this.listener){
+      this.listener = new EventSource(`${this.baseMercure}?topic=/accounts/${this.id}` , {
+        headers : {
+          "Authorization" : `Bearer ${this.token}`,
+        }
+      });
+      
+      for(let i=0;i<3;i++){
+        this.events[allowedEvents[i]] = (_data)=>{};
+      }
+      console.log(this.events);
+      this.listener.on("message" , this.callback_);
+    }
+
+    if(event==="error" || event==="ready"){
+
+      if(event==="ready"){
+        event = "open"
+      }
+
+      this.listener.on(event , callback);
+      return;
+    }
+
+    this.events[event] = callback;
+  }
+
+  /** Clears the events and safely closes eventlistener */
+  close(){
+    this.events = {};
+    this.listener.close();
+    this.listener = null;
+  }
+
 
   /** Gets all the Message resources of a given page. */
   getMessages(page = 1): type.MessageListResult {
@@ -197,6 +248,26 @@ class Mailjs {
       data: data,
     };
   }
+
+  /** @private */
+  callback_ = (raw:any) => {
+
+    let data = JSON.parse(raw.data);
+
+    if(data.isDeleted){
+      this.events["delete"](data);
+      return;
+    }
+
+    if(data.seen){
+      this.events["seen"](data);
+      return;
+    }
+
+    this.events["arrive"](data);
+  }
+
 }
+
 
 export default Mailjs;
