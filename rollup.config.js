@@ -10,7 +10,7 @@ export default {
 			format: "es",
 		},
 		{
-			file: "dist/mailjs.js",
+			file: "dist/mailjs.cjs",
 			format: "cjs",
 			exports: "default"
 		},
