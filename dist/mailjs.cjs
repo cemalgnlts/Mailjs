@@ -106,7 +106,6 @@ class Mailjs {
             for (let i = 0; i < 3; i++) {
                 this.events[allowedEvents[i]] = (_data) => { };
             }
-            console.log(this.events);
             this.listener.on("message", this.callback_);
         }
         if (event === "error" || event === "ready") {
