@@ -100,7 +100,7 @@ class Mailjs {
   // Message
 
   /** open an eventlistener to messages and error */
-  on(event:string , callback: any){
+  on(event:string , callback: type.MessageCallback | type.EmptyCallback | type.ErrorCallback){
 
     const allowedEvents = ["seen" , "delete" , "arrive" , "error" , "ready"];
     // Checking if valid events 
