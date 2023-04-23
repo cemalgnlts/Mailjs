@@ -6,7 +6,7 @@ You can link directly to the latest version by adding the following script tag i
 
 ```
 https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
+https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js
 ```
 
 ```html
