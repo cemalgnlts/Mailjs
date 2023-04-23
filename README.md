@@ -23,7 +23,45 @@ yarn add @cemalgnlts/mailjs
 **CDN**
 ```
 <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
 ```
+
+# Quickstart
+- Nodejs (CommonJS)
+```js 
+const Mailjs = require("@cemalgnlts/mailjs");
+const mailjs = new Mailjs();
+mailjs.createOneAccount()
+    .then((account)=>{
+      console.log(account.data);
+
+      mailjs.on("ready" , ()=>console.log("Ready To Listen!"));
+      mailjs.on("arrive" , (msg)=>console.log(msg));
+    });
+```
+
+- Nodejs (ESM)
+```js
+import Mailjs from "@cemalgnlts/mailjs";
+const mailjs = new Mailjs();
+```
+
+- Browser 
+
+Include these `scripts` in `html` page before using to include the extented polyfill of eventsouce and mailjs.
+```html
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
+
+<!-- you can exlude this if not listening to events (may cause runtime error) -->
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
+
+<script>
+  const mailjs = new Mailjs();
+</script>
+
+```
+For more reference visit `/examples` directory.
+
 
 # Documentation
 
@@ -55,6 +93,7 @@ User needs to login to access JWT token. Registration does not return this infor
 
 
 After the login process, the user's JWT token and ID are assigned to `mailjs.token` and `mailjs.id`
+
 
 ---
 
@@ -159,6 +198,22 @@ mailjs.setMessageSeen("[message id]", true)
   .then(console.log)
 ```
 
+---
+
+## Events
+Events are the **S**erver **S**ent **E**vents which are fired when message `arrive`,`seen` or `delete`. It also fires the `error` and `ready` state.
+
+### Example 
+```js
+mailjs.on("ready" , ()=>console.log("Ready to listen to Messages"));
+mailjs.on("seen" , (msg)=>console.log(`Message id:${msg.id} marked as seen.`));
+mailjs.on("delete" , (msg)=>console.log(`Message id:${msg.id} has been deleted.`));
+mailjs.on("arrive" , (msg)=>console.log(`Message id:${msg.id} has arrived. Preview ${msg.intro}`));
+mailjs.on("error" , (err)=>console.log(`Something went wrong. ${err}`));
+```
+
+---
+
 ## Source
 
 ### Get source
@@ -193,4 +248,4 @@ mailjs.createOneAccount()
 ```
 
 # Questions And Suggestions
-If you have any questions or suggestions, please contact us via email [support@mail.tm](mailto:support@mail.tm) or [discord](https://discord.gg/mail).
+If you have any questions or suggestions, please contact us via email [support@mail.tm](mailto:support@mail.tm) or [discord](https://discord.gg/Mhw2PDZBdk).

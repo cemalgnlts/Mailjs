@@ -14,12 +14,18 @@ yarn add @cemalgnlts/mailjs
 
 Import the package:
 
+- CommonJS
 ```js
-// import Mailjs from "@cemalgnlts/mailjs";
 const Mailjs = require("@cemalgnlts/mailjs");
-
 const mailjs = new Mailjs();
 ```
+
+- ESM
+```js
+import Mailjs from "@cemalgnlts/mailjs";
+const mailjs = new Mailjs();
+```
+
 
 # Demo
 

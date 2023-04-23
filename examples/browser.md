@@ -6,10 +6,12 @@ You can link directly to the latest version by adding the following script tag i
 
 ```
 https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
 ```
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.0/mailjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
 ```
 
 # Demo
@@ -20,6 +22,7 @@ https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js
     <head>
         <title>Page Title</title>
         <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.0/mailjs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
     </head>
     <body>
         <p>
