@@ -23,7 +23,7 @@ yarn add @cemalgnlts/mailjs
 **CDN**
 ```
 <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.2.0/eventsource.min.js"></script>
 ```
 
 # Quickstart
