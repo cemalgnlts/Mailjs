@@ -10,6 +10,9 @@ export declare type MessageListResult = PromiseResult<IMessagesResult[]>;
 export declare type MessageResult = PromiseResult<IMessageResult>;
 export declare type MessageSeenResult = PromiseResult<IMessageSeen>;
 export declare type SourceResult = PromiseResult<ISourceResource>;
+export declare type MessageCallback = (message: IMessagesResult) => void;
+export declare type EmptyCallback = () => void;
+export declare type ErrorCallback = (err: any) => void;
 /** register() */
 interface IRegisterResult {
     id: string;

@@ -1,6 +1,9 @@
 import type * as type from "./types";
 declare class Mailjs {
+    private events;
     private baseUrl;
+    private baseMercure;
+    private listener;
     private token;
     id: string;
     address: string;
@@ -23,6 +26,10 @@ declare class Mailjs {
     getDomains(): type.DomainListResult;
     /** Retrieve a domain by its id. */
     getDomain(domainId: string): type.DomainResult;
+    /** open an eventlistener to messages and error */
+    on(event: string, callback: type.MessageCallback | type.EmptyCallback | type.ErrorCallback): void;
+    /** Clears the events and safely closes eventlistener */
+    close(): void;
     /** Gets all the Message resources of a given page. */
     getMessages(page?: number): type.MessageListResult;
     /** Retrieves a Message resource with a specific id */
@@ -42,5 +49,7 @@ declare class Mailjs {
     makeHash_(size: number): string;
     /** @private */
     send_(path: string, method?: type.Methods, body?: object): type.PromiseResult<any>;
+    /** @private */
+    callback_: (raw: any) => void;
 }
 export default Mailjs;
