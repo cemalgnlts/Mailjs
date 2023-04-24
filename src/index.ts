@@ -100,34 +100,35 @@ class Mailjs {
   // Message
 
   /** open an eventlistener to messages and error */
-  on(event:string , callback: type.MessageCallback | type.EmptyCallback | type.ErrorCallback){
-
+  on(event: "seen" | "delete" | "arrive" | "error" | "open" | "ready", callback: type.MessageCallback | type.EmptyCallback | type.ErrorCallback) {
     const allowedEvents = ["seen" , "delete" , "arrive" , "error" , "ready"];
+
     // Checking if valid events 
-    if(!allowedEvents.includes(event)){
+    if(!allowedEvents.includes(event)) {
       return;
     }
 
-    if(!this.listener){
+    if(!this.listener) {
       this.listener = new EventSource(`${this.baseMercure}?topic=/accounts/${this.id}` , {
-        headers : {
+        headers: {
           "Authorization" : `Bearer ${this.token}`,
         }
       });
       
-      for(let i=0;i<3;i++){
-        this.events[allowedEvents[i]] = (_data)=>{};
+      for(let i=0; i<3; i++){
+        this.events[allowedEvents[i]] = (_data) => {};
       }
+
       this.listener.on("message" , this.callback_);
     }
 
-    if(event==="error" || event==="ready"){
+    if(event === "error" || event === "ready") {
 
-      if(event==="ready"){
+      if(event === "ready") {
         event = "open"
       }
 
-      this.listener.on(event , callback);
+      this.listener.on(event, callback);
       return;
     }
 
@@ -135,7 +136,7 @@ class Mailjs {
   }
 
   /** Clears the events and safely closes eventlistener */
-  close(){
+  close() {
     this.events = {};
     this.listener.close();
     this.listener = null;

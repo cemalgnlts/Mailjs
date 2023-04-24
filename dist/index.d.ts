@@ -27,7 +27,7 @@ declare class Mailjs {
     /** Retrieve a domain by its id. */
     getDomain(domainId: string): type.DomainResult;
     /** open an eventlistener to messages and error */
-    on(event: string, callback: type.MessageCallback | type.EmptyCallback | type.ErrorCallback): void;
+    on(event: "seen" | "delete" | "arrive" | "error" | "open" | "ready", callback: type.MessageCallback | type.EmptyCallback | type.ErrorCallback): void;
     /** Clears the events and safely closes eventlistener */
     close(): void;
     /** Gets all the Message resources of a given page. */

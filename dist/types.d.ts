@@ -1,18 +1,18 @@
-export declare type Methods = "GET" | "POST" | "DELETE" | "PATCH";
-export declare type PromiseResult<T> = Promise<IResult<T>>;
-export declare type RegisterResult = PromiseResult<IRegisterResult>;
-export declare type LoginResult = PromiseResult<ILoginResult>;
-export declare type DeleteResult = Promise<IDelete>;
-export declare type AccountResult = PromiseResult<IAccountResult>;
-export declare type DomainListResult = PromiseResult<IDomainResult[]>;
-export declare type DomainResult = PromiseResult<IDomainResult>;
-export declare type MessageListResult = PromiseResult<IMessagesResult[]>;
-export declare type MessageResult = PromiseResult<IMessageResult>;
-export declare type MessageSeenResult = PromiseResult<IMessageSeen>;
-export declare type SourceResult = PromiseResult<ISourceResource>;
-export declare type MessageCallback = (message: IMessagesResult) => void;
-export declare type EmptyCallback = () => void;
-export declare type ErrorCallback = (err: any) => void;
+export type Methods = "GET" | "POST" | "DELETE" | "PATCH";
+export type PromiseResult<T> = Promise<IResult<T>>;
+export type RegisterResult = PromiseResult<IRegisterResult>;
+export type LoginResult = PromiseResult<ILoginResult>;
+export type DeleteResult = Promise<IDelete>;
+export type AccountResult = PromiseResult<IAccountResult>;
+export type DomainListResult = PromiseResult<IDomainResult[]>;
+export type DomainResult = PromiseResult<IDomainResult>;
+export type MessageListResult = PromiseResult<IMessagesResult[]>;
+export type MessageResult = PromiseResult<IMessageResult>;
+export type MessageSeenResult = PromiseResult<IMessageSeen>;
+export type SourceResult = PromiseResult<ISourceResource>;
+export type MessageCallback = (message: IMessagesResult) => void;
+export type EmptyCallback = () => void;
+export type ErrorCallback = (err: any) => void;
 /** register() */
 interface IRegisterResult {
     id: string;
@@ -101,7 +101,7 @@ interface ISourceResource {
     downloadUrl: string;
     data: string;
 }
-export declare type CreateOneAccountResult = Promise<DomainResult | RegisterResult | LoginResult | {
+export type CreateOneAccountResult = Promise<DomainResult | RegisterResult | LoginResult | {
     status: boolean;
     data: {
         username: string;

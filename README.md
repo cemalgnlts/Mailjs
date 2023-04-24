@@ -32,12 +32,12 @@ yarn add @cemalgnlts/mailjs
 const Mailjs = require("@cemalgnlts/mailjs");
 const mailjs = new Mailjs();
 mailjs.createOneAccount()
-    .then((account)=>{
-      console.log(account.data);
+	.then(account => {
+		console.log(account.data);
+	});
 
-      mailjs.on("ready" , ()=>console.log("Ready To Listen!"));
-      mailjs.on("arrive" , (msg)=>console.log(msg));
-    });
+mailjs.on("ready" , () => console.log("Ready To Listen!"));
+mailjs.on("arrive" , msg => console.log(msg));
 ```
 
 - Nodejs (ESM)
@@ -56,7 +56,7 @@ Include these `scripts` in `html` page before using to include the extented poly
 <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
 
 <script>
-  const mailjs = new Mailjs();
+	const mailjs = new Mailjs();
 </script>
 
 ```
@@ -65,7 +65,7 @@ For more reference visit `/examples` directory.
 
 # Documentation
 
-Returns a Promise object after the function is called. If the request is sent correctly, `status` returns true. If it returns incorrect, the `status` will be false and the `message` in the data is also added.
+Returns a Promise object after the function is called. If the request is sent correctly, `status` returns true. If it returns incorrect, the `status` will be false and the `message` in the data is also added. If there is no error, `status` always returns `true`.
 
 A successfull response example:
 
@@ -73,7 +73,7 @@ A successfull response example:
 {
   "status": true,
   "message": "ok",
-  "data": ...
+  "data": {}
 }
 ```
 
@@ -83,7 +83,7 @@ A failed response example:
 {
   "status": false,
   "message": "Invalid credentials.",
-  "data": ...
+  "data": {}
 }
 ```
 
