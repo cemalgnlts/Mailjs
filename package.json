@@ -4,14 +4,15 @@
   "description": "A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.",
   "main": "dist/mailjs.cjs",
   "module": "dist/mailjs.mjs",
+  "browser": "dist/mailjs.min.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/mailjs.mjs",
       "require": "./dist/mailjs.cjs"
     }
   },
+  "type": "module",
   "scripts": {
     "build": "rimraf dist mailjs.min.js && rollup --config"
   },
@@ -38,10 +39,7 @@
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^8.3.2",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.70.2",
-    "rollup-plugin-uglify": "^5.0.2",
+    "esbuild": "0.19.4",
     "tslib": "^2.3.1",
     "typescript": "^4.6.3"
   }
