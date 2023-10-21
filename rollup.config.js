@@ -1,9 +1,11 @@
 import typescript from "@rollup/plugin-typescript";
-import { uglify } from "rollup-plugin-uglify";
+import terser from "@rollup/plugin-terser";
 
+/** @type {import("rollup").RollupOptions} */
 export default {
 	input: "src/index.ts",
-	external: ["node-fetch" , "eventsource"],
+	external: ["node-fetch", "eventsource"],
+	plugins: [typescript({ tsconfig: "./tsconfig.json" })],
 	output: [
 		{
 			file: "dist/mailjs.mjs",
@@ -15,16 +17,12 @@ export default {
 			exports: "default"
 		},
 		{
-			file: "./mailjs.min.js",
+			file: "dist/mailjs.min.js",
 			format: "iife",
 			name: "Mailjs",
-			interop: false,
-			globals: {
-				"node-fetch": "fetch",
-				"eventsource" : "EventSourcePolyfill"
-			},
-			plugins: [uglify()]
+			interop: "default",
+			globals: { "eventsource": "window.EventSourcePolyfill" },
+			plugins: [terser()]
 		}
 	],
-	plugins: [typescript({ tsconfig: "./tsconfig.json" })]
 };

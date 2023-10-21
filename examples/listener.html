@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listener Demo</title>
+    <script src="../eventsource.min.js"></script>
+    <script src="../dist/mailjs.min.js"></script>
+    <style>body { font-family: Roboto, sans-serif; } strong { user-select: all; cursor: pointer; }</style>
+</head>
+
+<body>
+    <p>Loading...</p>
+
+    <script>
+        const puts = (...args) => document.body.insertAdjacentHTML("beforeEnd", `<p>${args.join(" ")}</p>`);
+
+        const mailjs = new Mailjs();
+        let username = "";
+
+        puts("[1/4] An account is being created...");
+
+        // Create a random account.
+        mailjs.createOneAccount()
+            .then(onAccountCreated);
+
+        function onAccountCreated(acc) {
+            if (!acc.status) throw res.message;
+
+            username = acc.data.username;
+
+            mailjs.on("open", onOpen);
+            mailjs.on("arrive", onNewMessage);
+        }
+
+        function onOpen() {
+            puts("[2/4]", "A new mail is expected to arrive.");
+            puts("[2/4]", 'Go to this site: <a href="https://sendtestemail.com/" target="_blank">sendtestemail.com</a> type this address:', `<strong>${username}</strong>`);
+        }
+
+        // It is triggered when a new mail arrives.
+        function onNewMessage(msg) {
+            puts("[3/4]", "A new message has been received:");
+            puts(JSON.stringify(msg, null, 2));
+
+            // Stop listening.
+            mailjs.off();
+
+            // The created account is no longer needed.
+            mailjs.deleteMe()
+                .then(res => {
+                    if (!res.status) alert(res.message);
+
+                    puts("[4/4]", "Created account deleted.");
+                });
+        }
+    </script>
+</body>
+
+</html>

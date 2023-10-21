@@ -1,6 +1,6 @@
-import fetch from "node-fetch";
 import EventSource from "eventsource";
-import type * as type from "./types";
+
+import type * as type from "./types.ts";
 
 class Mailjs {
   private events: object;
@@ -30,7 +30,7 @@ class Mailjs {
       password,
     };
 
-    return this.send_("/accounts", "POST", data);
+    return this._send("/accounts", "POST", data);
   }
 
   /** Get an Account resource by its id. */
@@ -40,7 +40,7 @@ class Mailjs {
       password,
     };
 
-    const res = await this.send_("/token", "POST", data);
+    const res = await this._send("/token", "POST", data);
 
     if (res.status) {
       this.token = res.data.token;
@@ -67,17 +67,19 @@ class Mailjs {
 
   /** Retrieves a Account resource. */
   me(): type.AccountResult {
-    return this.send_("/me");
+    return this._send("/me");
   }
 
   /** Retrieves a Account resource. */
   getAccount(accountId: string): type.AccountResult {
-    return this.send_("/accounts/" + accountId);
+    return this._send("/accounts/" + accountId);
   }
 
   /** Deletes the Account resource. */
   deleteAccount(accountId: string): type.DeleteResult {
-    return this.send_("/accounts/" + accountId, "DELETE");
+    this.off();
+
+    return this._send("/accounts/" + accountId, "DELETE");
   }
 
   /** Deletes the logged in account. */
@@ -89,85 +91,101 @@ class Mailjs {
 
   /** Returns a list of domains. */
   getDomains(): type.DomainListResult {
-    return this.send_("/domains?page=1");
+    return this._send("/domains?page=1");
   }
 
   /** Retrieve a domain by its id. */
   getDomain(domainId: string): type.DomainResult {
-    return this.send_("/domains/" + domainId);
+    return this._send("/domains/" + domainId);
   }
 
   // Message
 
-  /** open an eventlistener to messages and error */
-  on(event: "seen" | "delete" | "arrive" | "error" | "open" | "ready", callback: type.MessageCallback | type.EmptyCallback | type.ErrorCallback) {
-    const allowedEvents = ["seen", "delete", "arrive", "error", "ready"];
+  /** Open an event listener to messages and error */
+  on(event: "seen" | "delete" | "arrive" | "error" | "open", callback: type.MessageCallback | type.EmptyCallback | type.SSEErrorEvent) {
+    if(!EventSource) {
+      console.error("EventSourcePolyfill is required for this feature. https://github.com/cemalgnlts/Mailjs/#quickstart");
+      return;
+    }
 
-    // Checking if valid events 
-    if (!allowedEvents.includes(event)) {
+    // Checking if valid events.
+    if (!["seen", "delete", "arrive", "error", "open"].includes(event)) {
+      console.error("Unknown event name:", event);
       return;
     }
 
     if (!this.listener) {
       this.listener = new EventSource(`${this.baseMercure}?topic=/accounts/${this.id}`, {
-        headers: {
-          "Authorization": `Bearer ${this.token}`,
-        }
+        headers: { "Authorization": `Bearer ${this.token}` }
       });
 
-      for (let i = 0; i < 3; i++) {
-        this.events[allowedEvents[i]] = (_data) => { };
-      }
+      this.events = {
+        arrive: () => { },
+        seen: () => { },
+        delete: () => { },
+        error: () => { }
+      };
 
-      this.listener.on("message", this.callback_);
+      const onMessage = (msg: type.SSEMessageEvent) => {
+        let data = JSON.parse(msg.data);
+
+        // We don't want account details.
+        if(data["@type"] === "Account") return;
+
+        let eventType = "arrive";
+
+        if (data.isDeleted) eventType = "delete";
+        else if (data.seen) eventType = "seen";
+
+        this.events[eventType](data);
+      };
+
+      const onError = (err: type.SSEErrorEvent) => {
+        this.events["error"](err);
+      };
+
+      this.listener.onmessage = onMessage;
+      this.listener.onerror = onError;
+
+      if(event === "open") this.listener.onopen = callback;
     }
 
-    if (event === "error" || event === "ready") {
-
-      if (event === "ready") {
-        event = "open"
-      }
-
-      this.listener.on(event, callback);
-      return;
-    }
-
-    this.events[event] = callback;
+    if(event !== "open") this.events[event] = callback;
   }
 
-  /** Clears the events and safely closes eventlistener */
-  close() {
+  /** Clears the events and safely closes event listener. */
+  off() {
+    if(this.listener) this.listener.close();
+    
     this.events = {};
-    this.listener.close();
     this.listener = null;
   }
 
-
   /** Gets all the Message resources of a given page. */
   getMessages(page = 1): type.MessageListResult {
-    return this.send_(`/messages?page=${page}`);
+    return this._send(`/messages?page=${page}`);
   }
 
   /** Retrieves a Message resource with a specific id */
   getMessage(messageId: string): type.MessageResult {
-    return this.send_("/messages/" + messageId);
+    return this._send("/messages/" + messageId);
   }
 
   /** Deletes the Message resource. */
   deleteMessage(messageId: string): type.DeleteResult {
-    return this.send_("/messages/" + messageId, "DELETE");
+    return this._send("/messages/" + messageId, "DELETE");
   }
 
   /** Sets a message as readed or unreaded. */
   setMessageSeen(messageId: string, seen = true): type.MessageResult {
-    return this.send_("/messages/" + messageId, "PATCH", { seen });
+    return this._send("/messages/" + messageId, "PATCH", { seen });
   }
 
   // Source
 
   /** Gets a Message's Source resource */
   getSource(sourceId: string): type.SourceResult {
-    return this.send_("/sources/" + sourceId);
+    return this._send("/sources/" + sourceId);
   }
 
   // Helper
@@ -195,6 +213,7 @@ class Mailjs {
 
     return {
       status: true,
+      message: "ok",
       data: {
         username,
         password,
@@ -215,7 +234,7 @@ class Mailjs {
   }
 
   /** @private */
-  async send_(
+  async _send(
     path: string,
     method: type.Methods = "GET",
     body?: object
@@ -248,26 +267,9 @@ class Mailjs {
       data: data,
     };
   }
-
-  /** @private */
-  callback_ = (raw: any) => {
-
-    let data = JSON.parse(raw.data);
-
-    if (data.isDeleted) {
-      this.events["delete"](data);
-      return;
-    }
-
-    if (data.seen) {
-      this.events["seen"](data);
-      return;
-    }
-
-    this.events["arrive"](data);
-  }
-
 }
 
 
 export default Mailjs;
+
+const mailjs = new Mailjs();

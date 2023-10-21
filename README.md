@@ -22,44 +22,42 @@ yarn add @cemalgnlts/mailjs
 
 **CDN**
 ```
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
+<!-- It is only needed to listen to new messages. -->
 <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.2.0/eventsource.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
 ```
 
 # Quickstart
-- Nodejs (CommonJS)
+
+* Nodejs (CommonJS)
 ```js 
 const Mailjs = require("@cemalgnlts/mailjs");
-const mailjs = new Mailjs();
-mailjs.createOneAccount()
-	.then(account => {
-		console.log(account.data);
-	});
-
-mailjs.on("ready" , () => console.log("Ready To Listen!"));
-mailjs.on("arrive" , msg => console.log(msg));
 ```
 
-- Nodejs (ESM)
+* Nodejs (ESM)
 ```js
 import Mailjs from "@cemalgnlts/mailjs";
-const mailjs = new Mailjs();
 ```
 
-- Browser 
-
-Include these `scripts` in `html` page before using to include the extented polyfill of eventsouce and mailjs.
+* Browser 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
-
-<!-- you can exlude this if not listening to events (may cause runtime error) -->
+<!-- You can exlude this if not listening to events. -->
 <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
 
-<script>
-	const mailjs = new Mailjs();
-</script>
-
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
 ```
+
+[`EventSourcePolyfill`](https://github.com/EventSource/eventsource) is only for listening to new incoming messages, see [Events](#events) title for more information. Add [`EventSourcePolyfill`](https://github.com/EventSource/eventsource) before Mailjs.
+
+```js
+const mailjs = new Mailjs();
+mailjs.createOneAccount()
+	.then(account => console.log(account.data));
+
+mailjs.on("ready", () => console.log("Ready To Listen!"));
+mailjs.on("arrive", msg => console.log(msg));
+```
+
 For more reference visit `/examples` directory.
 
 
@@ -87,13 +85,30 @@ A failed response example:
 }
 ```
 
-To see all results, check out the API page: [https://api.mail.tm/](https://api.mail.tm/)
+Example use:
+
+```js
+const acc = await mailjs.createOneAccount();
+
+// If there is a error.
+if(!acc.status) {
+  // Show the cause of the error.
+  console.error(acc.message);
+
+  return;
+}
+
+// If successful, access the data.
+console.log(acc.data);
+```
+
+To see all results, check out the API page: [https://api.mail.tm/](https://api.mail.tm/).
+
 
 User needs to login to access JWT token. Registration does not return this information, log in after registration.
 
 
 After the login process, the user's JWT token and ID are assigned to `mailjs.token` and `mailjs.id`
-
 
 ---
 
@@ -102,23 +117,21 @@ After the login process, the user's JWT token and ID are assigned to `mailjs.tok
 ### List Domains
 ```js
 mailjs.getDomains()
-  .then(console.log)
+  .then(console.log);
 ```
 
 ### Get Domain
 ```js
 mailjs.getDomain("[domain id]")
-  .then(console.log)
+  .then(console.log);
 ```
-
----
 
 ## Account
 
 ### Create Account
 ```js
 mailjs.register("user@example.com", "password")
-  .then(console.log)
+  .then(console.log);
 ```
 
 ### Login
@@ -127,7 +140,7 @@ mailjs.register("user@example.com", "password")
 
 ```js
 mailjs.login("user@example.com", "password")
-  .then(console.log)
+  .then(console.log);
 ```
 
 ### Login With Token
@@ -136,34 +149,32 @@ If you use the JWT token stored in `mailjs.token` after login, it will allow you
 
 ```js
 mailjs.loginWithToken("eyJ0eXAiO...")
-  .then(console.log)
+  .then(console.log);
 ```
 
 ### Get Account Data
 ```js
 mailjs.me()
-  .then(console.log)
+  .then(console.log);
 ```
 
 ### Delete Account
 ```js
 mailjs.deleteMe()
-  .then(console.log)
+  .then(console.log);
 ```
 
 You can also use the id to access the user's information and delete their account.
 
 ```js
 mailjs.deleteAccount("[account id]")
-  .then(console.log)
+  .then(console.log);
 ```
 
 ```js
 mailjs.getAccount("[account id]")
-  .then(console.log)
+  .then(console.log);
 ```
-
----
 
 ## Message
 
@@ -172,22 +183,21 @@ Gets all the Message resources of a given page.
 
 ```js
 mailjs.getMessages()
-  .then(console.log)
+  .then(console.log);
 ```
-
 
 ### Read a message
 Retrieves a Message resource with a specific id (It has way more information than a message retrieved with GET /messages but it hasn't the "intro" member)
 
 ```js
 mailjs.getMessage("[message id]")
-  .then(console.log)
+  .then(console.log);
 ```
 
 ### Delete a message
 ```js
 mailjs.deleteMessage("[message id]")
-  .then(console.log)
+  .then(console.log);
 ```
 
 ### Make a message readed or unreaded.
@@ -195,24 +205,38 @@ mailjs.deleteMessage("[message id]")
 
 ```js
 mailjs.setMessageSeen("[message id]", true)
-  .then(console.log)
+  .then(console.log);
 ```
-
----
 
 ## Events
-Events are the **S**erver **S**ent **E**vents which are fired when message `arrive`,`seen` or `delete`. It also fires the `error` and `ready` state.
+Events are the **S**erver **S**ent **E**vents which are fired when message `arrive`, `seen` or `delete`. It also fires the `error`, `open` state.
 
-### Example 
+### on
+Open an event listener to messages and error.
+
 ```js
-mailjs.on("ready" , ()=>console.log("Ready to listen to Messages"));
-mailjs.on("seen" , (msg)=>console.log(`Message id:${msg.id} marked as seen.`));
-mailjs.on("delete" , (msg)=>console.log(`Message id:${msg.id} has been deleted.`));
-mailjs.on("arrive" , (msg)=>console.log(`Message id:${msg.id} has arrived. Preview ${msg.intro}`));
-mailjs.on("error" , (err)=>console.log(`Something went wrong. ${err}`));
+// Add it before other activities if you need it.
+mailjs.on("open", msg => console.log("Event listening has begun."));
+
+// When a new message arrives.
+mailjs.on("arrive", msg => console.log(`Message id: ${msg.id} has arrived (${msg.intro}).`));
+
+// When a message is marked as read.
+mailjs.on("seen", msg => console.log(`Message id: ${msg.id} marked as seen.`));
+
+// When a message is deleted.
+mailjs.on("delete", msg => console.log(`Message id: ${msg.id} has been deleted.`));
+
+// If an error occurs during listening.
+mailjs.on("error" , err => console.error("Something went wrong:", err));
 ```
 
----
+### off
+Clears the events and safely closes event listener.
+
+```js
+mailjs.off();
+```
 
 ## Source
 
@@ -240,6 +264,7 @@ mailjs.createOneAccount()
 ```json
 {
   "status": true,
+  "message": "ok",
   "data": {
     "username": "user@example.com",
     "password": "my-password"
