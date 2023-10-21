@@ -49,16 +49,15 @@ import Mailjs from "@cemalgnlts/mailjs";
 
 [`EventSourcePolyfill`](https://github.com/EventSource/eventsource) is only for listening to new incoming messages, see [Events](#events) title for more information. Add [`EventSourcePolyfill`](https://github.com/EventSource/eventsource) before Mailjs.
 
+
 ```js
 const mailjs = new Mailjs();
+
 mailjs.createOneAccount()
 	.then(account => console.log(account.data));
-
-mailjs.on("ready", () => console.log("Ready To Listen!"));
-mailjs.on("arrive", msg => console.log(msg));
 ```
 
-For more reference visit `/examples` directory.
+For more reference visit [/examples](/examples) directory.
 
 
 # Documentation
