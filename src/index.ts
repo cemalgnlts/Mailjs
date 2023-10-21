@@ -57,7 +57,7 @@ class Mailjs {
 
     const res = await this.me();
 
-    if (!res.status) throw new Error(res.message);
+    if (!res.status) return res;
 
     this.id = res.data.id;
     this.address = res.data.address;
@@ -101,66 +101,6 @@ class Mailjs {
 
   // Message
 
-  /** Open an event listener to messages and error */
-  on(event: "seen" | "delete" | "arrive" | "error" | "open", callback: type.MessageCallback | type.EmptyCallback | type.SSEErrorEvent) {
-    if(!EventSource) {
-      console.error("EventSourcePolyfill is required for this feature. https://github.com/cemalgnlts/Mailjs/#quickstart");
-      return;
-    }
-
-    // Checking if valid events.
-    if (!["seen", "delete", "arrive", "error", "open"].includes(event)) {
-      console.error("Unknown event name:", event);
-      return;
-    }
-
-    if (!this.listener) {
-      this.listener = new EventSource(`${this.baseMercure}?topic=/accounts/${this.id}`, {
-        headers: { "Authorization": `Bearer ${this.token}` }
-      });
-
-      this.events = {
-        arrive: () => { },
-        seen: () => { },
-        delete: () => { },
-        error: () => { }
-      };
-
-      const onMessage = (msg: type.SSEMessageEvent) => {
-        let data = JSON.parse(msg.data);
-
-        // We don't want account details.
-        if(data["@type"] === "Account") return;
-
-        let eventType = "arrive";
-
-        if (data.isDeleted) eventType = "delete";
-        else if (data.seen) eventType = "seen";
-
-        this.events[eventType](data);
-      };
-
-      const onError = (err: type.SSEErrorEvent) => {
-        this.events["error"](err);
-      };
-
-      this.listener.onmessage = onMessage;
-      this.listener.onerror = onError;
-
-      if(event === "open") this.listener.onopen = callback;
-    }
-
-    if(event !== "open") this.events[event] = callback;
-  }
-
-  /** Clears the events and safely closes event listener. */
-  off() {
-    if(this.listener) this.listener.close();
-    
-    this.events = {};
-    this.listener = null;
-  }
-
   /** Gets all the Message resources of a given page. */
   getMessages(page = 1): type.MessageListResult {
     return this._send(`/messages?page=${page}`);
@@ -188,6 +128,68 @@ class Mailjs {
     return this._send("/sources/" + sourceId);
   }
 
+  // Events
+
+  /** Open an event listener to messages and error */
+  on(event: "seen" | "delete" | "arrive" | "error" | "open", callback: type.MessageCallback | type.EmptyCallback | type.SSEErrorEvent) {
+    if (!EventSource) {
+      console.error("EventSourcePolyfill is required for this feature. https://github.com/cemalgnlts/Mailjs/#quickstart");
+      return;
+    }
+
+    // Checking if valid events.
+    if (!["seen", "delete", "arrive", "error", "open"].includes(event)) {
+      console.error("Unknown event name:", event);
+      return;
+    }
+
+    if (!this.listener) {
+      this.listener = new EventSource(`${this.baseMercure}?topic=/accounts/${this.id}`, {
+        headers: { "Authorization": `Bearer ${this.token}` }
+      });
+
+      this.events = {
+        arrive: () => { },
+        seen: () => { },
+        delete: () => { },
+        error: () => { }
+      };
+
+      const onMessage = (msg: type.SSEMessageEvent) => {
+        let data = JSON.parse(msg.data);
+
+        // We don't want account details.
+        if (data["@type"] === "Account") return;
+
+        let eventType = "arrive";
+
+        if (data.isDeleted) eventType = "delete";
+        else if (data.seen) eventType = "seen";
+
+        this.events[eventType](data);
+      };
+
+      const onError = (err: type.SSEErrorEvent) => {
+        this.events["error"](err);
+      };
+
+      this.listener.onmessage = onMessage;
+      this.listener.onerror = onError;
+
+      if (event === "open") this.listener.onopen = callback;
+    }
+
+    if (event !== "open") this.events[event] = callback;
+  }
+
+  /** Clears the events and safely closes event listener. */
+  off() {
+    if (this.listener) this.listener.close();
+
+    this.events = {};
+    this.listener = null;
+  }
+
   // Helper
 
   /** Create random account. */
@@ -198,10 +200,10 @@ class Mailjs {
     else domain = domain.data[0].domain;
 
     // 2) Generate a username (test@domain.com).
-    const username = `${this.makeHash_(5)}@${domain}`;
+    const username = `${this._makeHash(5)}@${domain}`;
 
     // 3) Generate a password and register.
-    const password = this.makeHash_(8);
+    const password = this._makeHash(8);
     let registerRes: any = await this.register(username, password);
     if (!registerRes.status) return registerRes;
     else registerRes = registerRes.data;
@@ -221,16 +223,12 @@ class Mailjs {
     };
   }
 
-  /**
-   * https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript/14944262#14944262
-   * @private
-   */
-  makeHash_(size: number) {
-    return Array.from({ length: size }, () =>
-      (function (charset) {
-        return charset.charAt(Math.floor(Math.random() * charset.length));
-      })("abcdefghijklmnopqrstuvwxyz0123456789")
-    ).join("");
+  /** @private */
+  _makeHash(size: number) {
+    const charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+    const select = () => charset.charAt(Math.floor(Math.random() * charset.length));
+
+    return Array.from({ length: size }, select).join("");
   }
 
   /** @private */

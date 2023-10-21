@@ -26,10 +26,6 @@ declare class Mailjs {
     getDomains(): type.DomainListResult;
     /** Retrieve a domain by its id. */
     getDomain(domainId: string): type.DomainResult;
-    /** Open an event listener to messages and error */
-    on(event: "seen" | "delete" | "arrive" | "error" | "open", callback: type.MessageCallback | type.EmptyCallback | type.SSEErrorEvent): void;
-    /** Clears the events and safely closes event listener. */
-    off(): void;
     /** Gets all the Message resources of a given page. */
     getMessages(page?: number): type.MessageListResult;
     /** Retrieves a Message resource with a specific id */
@@ -40,13 +36,14 @@ declare class Mailjs {
     setMessageSeen(messageId: string, seen?: boolean): type.MessageResult;
     /** Gets a Message's Source resource */
     getSource(sourceId: string): type.SourceResult;
+    /** Open an event listener to messages and error */
+    on(event: "seen" | "delete" | "arrive" | "error" | "open", callback: type.MessageCallback | type.EmptyCallback | type.SSEErrorEvent): void;
+    /** Clears the events and safely closes event listener. */
+    off(): void;
     /** Create random account. */
     createOneAccount(): type.CreateOneAccountResult;
-    /**
-     * https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript/14944262#14944262
-     * @private
-     */
-    makeHash_(size: number): string;
+    /** @private */
+    _makeHash(size: number): string;
     /** @private */
     _send(path: string, method?: type.Methods, body?: object): type.PromiseResult<any>;
 }

@@ -45,7 +45,7 @@ class Mailjs {
         this.token = token;
         const res = await this.me();
         if (!res.status)
-            throw new Error(res.message);
+            return res;
         this.id = res.data.id;
         this.address = res.data.address;
         return res;
@@ -77,6 +77,28 @@ class Mailjs {
         return this._send("/domains/" + domainId);
     }
     // Message
+    /** Gets all the Message resources of a given page. */
+    getMessages(page = 1) {
+        return this._send(`/messages?page=${page}`);
+    }
+    /** Retrieves a Message resource with a specific id */
+    getMessage(messageId) {
+        return this._send("/messages/" + messageId);
+    }
+    /** Deletes the Message resource. */
+    deleteMessage(messageId) {
+        return this._send("/messages/" + messageId, "DELETE");
+    }
+    /** Sets a message as readed or unreaded. */
+    setMessageSeen(messageId, seen = true) {
+        return this._send("/messages/" + messageId, "PATCH", { seen });
+    }
+    // Source
+    /** Gets a Message's Source resource */
+    getSource(sourceId) {
+        return this._send("/sources/" + sourceId);
+    }
+    // Events
     /** Open an event listener to messages and error */
     on(event, callback) {
         if (!EventSource) {
@@ -128,27 +150,6 @@ class Mailjs {
         this.events = {};
         this.listener = null;
     }
-    /** Gets all the Message resources of a given page. */
-    getMessages(page = 1) {
-        return this._send(`/messages?page=${page}`);
-    }
-    /** Retrieves a Message resource with a specific id */
-    getMessage(messageId) {
-        return this._send("/messages/" + messageId);
-    }
-    /** Deletes the Message resource. */
-    deleteMessage(messageId) {
-        return this._send("/messages/" + messageId, "DELETE");
-    }
-    /** Sets a message as readed or unreaded. */
-    setMessageSeen(messageId, seen = true) {
-        return this._send("/messages/" + messageId, "PATCH", { seen });
-    }
-    // Source
-    /** Gets a Message's Source resource */
-    getSource(sourceId) {
-        return this._send("/sources/" + sourceId);
-    }
     // Helper
     /** Create random account. */
     async createOneAccount() {
@@ -159,9 +160,9 @@ class Mailjs {
         else
             domain = domain.data[0].domain;
         // 2) Generate a username (test@domain.com).
-        const username = `${this.makeHash_(5)}@${domain}`;
+        const username = `${this._makeHash(5)}@${domain}`;
         // 3) Generate a password and register.
-        const password = this.makeHash_(8);
+        const password = this._makeHash(8);
         let registerRes = await this.register(username, password);
         if (!registerRes.status)
             return registerRes;
@@ -182,14 +183,11 @@ class Mailjs {
             },
         };
     }
-    /**
-     * https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript/14944262#14944262
-     * @private
-     */
-    makeHash_(size) {
-        return Array.from({ length: size }, () => (function (charset) {
-            return charset.charAt(Math.floor(Math.random() * charset.length));
-        })("abcdefghijklmnopqrstuvwxyz0123456789")).join("");
+    /** @private */
+    _makeHash(size) {
+        const charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+        const select = () => charset.charAt(Math.floor(Math.random() * charset.length));
+        return Array.from({ length: size }, select).join("");
     }
     /** @private */
     async _send(path, method = "GET", body) {
