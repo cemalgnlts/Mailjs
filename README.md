@@ -23,8 +23,8 @@ yarn add @cemalgnlts/mailjs
 **CDN**
 ```
 <!-- It is only needed to listen to new messages. -->
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.2.0/eventsource.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@3.0.0/eventsource.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@cemalgnlts/mailjs@3.0.0/dist/mailjs.min.js"></script>
 ```
 
 # Quickstart
@@ -42,9 +42,9 @@ import Mailjs from "@cemalgnlts/mailjs";
 * Browser 
 ```html
 <!-- You can exlude this if not listening to events. -->
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@3.0.0/eventsource.min.js"></script>
+<!-- Mailjs library -->
+<script src="https://cdn.jsdelivr.net/npm/@cemalgnlts/mailjs@3.0.0/dist/mailjs.min.js"></script>
 ```
 
 [`EventSourcePolyfill`](https://github.com/EventSource/eventsource) is only for listening to new incoming messages, see [Events](#events) title for more information. Add [`EventSourcePolyfill`](https://github.com/EventSource/eventsource) before Mailjs.

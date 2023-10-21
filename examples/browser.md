@@ -4,19 +4,29 @@
 
 You can link directly to the latest version by adding the following script tag inside your head tags:
 
+## jsdelivr
 ```
-https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/mailjs.min.js
-https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js
+https://cdn.jsdelivr.net/npm/@cemalgnlts/mailjs@3.0.0/dist/mailjs.min.js
+```
+
+## unpkg
+```
+https://unpkg.com/@cemalgnlts/mailjs@3.0.0/dist/mailjs.min.js
+```
+
+```
+https://cdn.jsdelivr.net/npm/@cemalgnlts/mailjs@3.0.0/dist/mailjs.min.js
+https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@3.0.0/eventsource.min.js
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.0/mailjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@cemalgnlts/mailjs@3.0.0/dist/mailjs.min.js"></script>
 ```
 
 Include `EventSourcePolyfill` if you want to listen when new messages arrive:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@3.0.0/eventsource.min.js"></script>
 ```
 
 # Demo
@@ -28,7 +38,7 @@ Include `EventSourcePolyfill` if you want to listen when new messages arrive:
 <html>
     <head>
         <title>Page Title</title>
-        <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.0/mailjs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@cemalgnlts/mailjs@3.0.0/dist/mailjs.min.js"></script>
     </head>
     <body>
         <p>
