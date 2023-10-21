@@ -12,9 +12,9 @@ export type MessageListResult = PromiseResult<IMessagesResult[]>;
 export type MessageResult = PromiseResult<IMessageResult>;
 export type MessageSeenResult = PromiseResult<IMessageSeen>;
 export type SourceResult = PromiseResult<ISourceResource>;
-export type MessageCallback = (message : IMessagesResult) => void;
+export type MessageCallback = (message: IMessagesResult) => void;
 export type EmptyCallback = () => void;
-export type ErrorCallback = (err : any) => void;
+export type ErrorCallback = (err: any) => void;
 
 /** register() */
 interface IRegisterResult {
@@ -35,10 +35,10 @@ interface ILoginResult {
 }
 
 /** deleteAccount() - deleteMe() - deleteMessage() */
-interface IDelete {}
+interface IDelete { }
 
 /** me() - getAccount() */
-interface IAccountResult extends IRegisterResult {}
+interface IAccountResult extends IRegisterResult { }
 
 /** getDomain() - getDomains() */
 interface IDomainResult {
@@ -112,18 +112,23 @@ interface ISourceResource {
   data: string;
 }
 
-export type CreateOneAccountResult = Promise<
-  | DomainResult
-  | RegisterResult
-  | LoginResult
-  | {
-      status: boolean;
-      data: {
-        username: string;
-        password: string;
-      };
-    }
->;
+export interface SSEMessageEvent {
+  type: string;
+  data: string;
+  lastEventId: string;
+  origin: string;
+}
+
+export interface SSEErrorEvent {
+  type: string;
+  status: number;
+  message: string;
+}
+
+export type CreateOneAccountResult = PromiseResult<{
+  username: string;
+  password: string;
+}>;
 
 /**
  * Request object
@@ -139,7 +144,7 @@ export interface IRequestObject {
 }
 
 /**
- * Request response
+ * Response object
  */
 interface IResult<T> {
   status: boolean;

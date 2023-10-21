@@ -101,12 +101,20 @@ interface ISourceResource {
     downloadUrl: string;
     data: string;
 }
-export type CreateOneAccountResult = Promise<DomainResult | RegisterResult | LoginResult | {
-    status: boolean;
-    data: {
-        username: string;
-        password: string;
-    };
+export interface SSEMessageEvent {
+    type: string;
+    data: string;
+    lastEventId: string;
+    origin: string;
+}
+export interface SSEErrorEvent {
+    type: string;
+    status: number;
+    message: string;
+}
+export type CreateOneAccountResult = PromiseResult<{
+    username: string;
+    password: string;
 }>;
 /**
  * Request object
@@ -121,7 +129,7 @@ export interface IRequestObject {
     body?: string;
 }
 /**
- * Request response
+ * Response object
  */
 interface IResult<T> {
     status: boolean;

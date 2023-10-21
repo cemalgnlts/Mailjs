@@ -1,28 +1,16 @@
 'use strict';
 
-var fetch = require('node-fetch');
 var EventSource = require('eventsource');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var fetch__default = /*#__PURE__*/_interopDefaultLegacy(fetch);
-var EventSource__default = /*#__PURE__*/_interopDefaultLegacy(EventSource);
-
 class Mailjs {
+    events;
+    baseUrl;
+    baseMercure;
+    listener;
+    token;
+    id;
+    address;
     constructor() {
-        /** @private */
-        this.callback_ = (raw) => {
-            let data = JSON.parse(raw.data);
-            if (data.isDeleted) {
-                this.events["delete"](data);
-                return;
-            }
-            if (data.seen) {
-                this.events["seen"](data);
-                return;
-            }
-            this.events["arrive"](data);
-        };
         this.baseUrl = "https://api.mail.tm";
         this.baseMercure = "https://mercure.mail.tm/.well-known/mercure";
         this.listener = null;
@@ -38,7 +26,7 @@ class Mailjs {
             address,
             password,
         };
-        return this.send_("/accounts", "POST", data);
+        return this._send("/accounts", "POST", data);
     }
     /** Get an Account resource by its id. */
     async login(address, password) {
@@ -46,7 +34,7 @@ class Mailjs {
             address,
             password,
         };
-        const res = await this.send_("/token", "POST", data);
+        const res = await this._send("/token", "POST", data);
         if (res.status) {
             this.token = res.data.token;
             this.id = res.data.id;
@@ -66,15 +54,16 @@ class Mailjs {
     }
     /** Retrieves a Account resource. */
     me() {
-        return this.send_("/me");
+        return this._send("/me");
     }
     /** Retrieves a Account resource. */
     getAccount(accountId) {
-        return this.send_("/accounts/" + accountId);
+        return this._send("/accounts/" + accountId);
     }
     /** Deletes the Account resource. */
     deleteAccount(accountId) {
-        return this.send_("/accounts/" + accountId, "DELETE");
+        this.off();
+        return this._send("/accounts/" + accountId, "DELETE");
     }
     /** Deletes the logged in account. */
     deleteMe() {
@@ -83,66 +72,84 @@ class Mailjs {
     // Domain
     /** Returns a list of domains. */
     getDomains() {
-        return this.send_("/domains?page=1");
+        return this._send("/domains?page=1");
     }
     /** Retrieve a domain by its id. */
     getDomain(domainId) {
-        return this.send_("/domains/" + domainId);
+        return this._send("/domains/" + domainId);
     }
     // Message
-    /** open an eventlistener to messages and error */
+    /** Open an event listener to messages and error */
     on(event, callback) {
-        const allowedEvents = ["seen", "delete", "arrive", "error", "ready"];
-        // Checking if valid events 
-        if (!allowedEvents.includes(event)) {
+        if (!EventSource) {
+            console.error("EventSourcePolyfill is required for this feature. https://github.com/cemalgnlts/Mailjs/#quickstart");
+            return;
+        }
+        // Checking if valid events.
+        if (!["seen", "delete", "arrive", "error", "open"].includes(event)) {
+            console.error("Unknown event name:", event);
             return;
         }
         if (!this.listener) {
-            this.listener = new EventSource__default["default"](`${this.baseMercure}?topic=/accounts/${this.id}`, {
-                headers: {
-                    "Authorization": `Bearer ${this.token}`,
-                }
+            this.listener = new EventSource(`${this.baseMercure}?topic=/accounts/${this.id}`, {
+                headers: { "Authorization": `Bearer ${this.token}` }
             });
-            for (let i = 0; i < 3; i++) {
-                this.events[allowedEvents[i]] = (_data) => { };
-            }
-            this.listener.on("message", this.callback_);
+            this.events = {
+                arrive: () => { },
+                seen: () => { },
+                delete: () => { },
+                error: () => { }
+            };
+            const onMessage = (msg) => {
+                let data = JSON.parse(msg.data);
+                // We don't want account details.
+                if (data["@type"] === "Account")
+                    return;
+                let eventType = "arrive";
+                if (data.isDeleted)
+                    eventType = "delete";
+                else if (data.seen)
+                    eventType = "seen";
+                this.events[eventType](data);
+            };
+            const onError = (err) => {
+                this.events["error"](err);
+            };
+            this.listener.onmessage = onMessage;
+            this.listener.onerror = onError;
+            if (event === "open")
+                this.listener.onopen = callback;
         }
-        if (event === "error" || event === "ready") {
-            if (event === "ready") {
-                event = "open";
-            }
-            this.listener.on(event, callback);
-            return;
-        }
-        this.events[event] = callback;
+        if (event !== "open")
+            this.events[event] = callback;
     }
-    /** Clears the events and safely closes eventlistener */
-    close() {
+    /** Clears the events and safely closes event listener. */
+    off() {
+        if (this.listener)
+            this.listener.close();
         this.events = {};
-        this.listener.close();
         this.listener = null;
     }
     /** Gets all the Message resources of a given page. */
     getMessages(page = 1) {
-        return this.send_(`/messages?page=${page}`);
+        return this._send(`/messages?page=${page}`);
     }
     /** Retrieves a Message resource with a specific id */
     getMessage(messageId) {
-        return this.send_("/messages/" + messageId);
+        return this._send("/messages/" + messageId);
     }
     /** Deletes the Message resource. */
     deleteMessage(messageId) {
-        return this.send_("/messages/" + messageId, "DELETE");
+        return this._send("/messages/" + messageId, "DELETE");
     }
     /** Sets a message as readed or unreaded. */
     setMessageSeen(messageId, seen = true) {
-        return this.send_("/messages/" + messageId, "PATCH", { seen });
+        return this._send("/messages/" + messageId, "PATCH", { seen });
     }
     // Source
     /** Gets a Message's Source resource */
     getSource(sourceId) {
-        return this.send_("/sources/" + sourceId);
+        return this._send("/sources/" + sourceId);
     }
     // Helper
     /** Create random account. */
@@ -170,6 +177,7 @@ class Mailjs {
             loginRes = loginRes.data;
         return {
             status: true,
+            message: "ok",
             data: {
                 username,
                 password,
@@ -186,7 +194,7 @@ class Mailjs {
         })("abcdefghijklmnopqrstuvwxyz0123456789")).join("");
     }
     /** @private */
-    async send_(path, method = "GET", body) {
+    async _send(path, method = "GET", body) {
         const options = {
             method,
             headers: {
@@ -199,10 +207,10 @@ class Mailjs {
             options.headers["content-type"] = `application/${contentType}`;
             options.body = JSON.stringify(body);
         }
-        const res = await fetch__default["default"](this.baseUrl + path, options);
+        const res = await fetch(this.baseUrl + path, options);
         let data;
         const contentType = res.headers.get("content-type");
-        if (contentType === null || contentType === void 0 ? void 0 : contentType.startsWith("application/json"))
+        if (contentType?.startsWith("application/json"))
             data = await res.json();
         else
             data = await res.text();

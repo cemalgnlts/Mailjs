@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "ES2017",
     "declaration": true,
-    "declarationDir": ".",
-    "moduleResolution": "node"
+    "target": "ESNext",
+    "moduleResolution": "Node",
+    "outDir": "dist"
   },
-  "include": ["src/*.ts"],
+  "include": ["src/*"],
   "exclude": ["dist"]
 }

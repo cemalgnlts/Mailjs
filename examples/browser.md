@@ -11,10 +11,17 @@ https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.0/mailjs.min.js"></script>
+```
+
+Include `EventSourcePolyfill` if you want to listen when new messages arrive:
+
+```html
 <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
 ```
 
 # Demo
+
+## Basic
 
 ```html
 <!DOCTYPE html>
@@ -22,7 +29,6 @@ https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js
     <head>
         <title>Page Title</title>
         <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@2.0/mailjs.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js"></script>
     </head>
     <body>
         <p>
@@ -31,11 +37,21 @@ https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@latest/eventsource.min.js
         
         <script>
             const mailjs = new Mailjs();
-            mailjs.getDomains().then((res) => {
+            mailjs.getDomains()
+            .then((res) => {
                 console.log(res);
+
+                if(!res.status) {
+                    return;
+                    alert(res.message);
+                }
+                
                 document.querySelector("#domain").innerText = res.data[0].domain;
             });
         </script>
     </body>
 </html>
 ```
+
+## Listener
+[listener.html](listener.html)

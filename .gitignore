@@ -1,5 +1,2 @@
-node_modules
-
-# FIX: rollup creates ts types files in both dist folder and home directory.
-types.d.ts
-index.d.ts
+node_modules/
+.parcel-cache
