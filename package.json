@@ -1,6 +1,6 @@
 {
   "name": "@cemalgnlts/mailjs",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A JavaScript wrapper around the [mail.tm](https://docs.mail.tm/) api.",
   "type": "module",
   "source": "src/index.ts",
