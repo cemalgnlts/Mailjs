@@ -227,7 +227,7 @@ mailjs.on("seen", msg => console.log(`Message id: ${msg.id} marked as seen.`));
 mailjs.on("delete", msg => console.log(`Message id: ${msg.id} has been deleted.`));
 
 // If an error occurs during listening.
-mailjs.on("error" , err => console.error("Something went wrong:", err));
+mailjs.on("error", err => console.error("Something went wrong:", err));
 ```
 
 ### off

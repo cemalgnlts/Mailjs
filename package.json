@@ -11,7 +11,8 @@
   "exports": {
     ".": {
       "import": "./dist/mailjs.mjs",
-      "require": "./dist/mailjs.cjs"
+      "require": "./dist/mailjs.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
