@@ -214,6 +214,7 @@ class Mailjs {
     else loginRes = loginRes.data;
 
     return {
+      statusCode: loginRes.statusCode,
       status: true,
       message: "ok",
       data: {
@@ -260,6 +261,7 @@ class Mailjs {
     else data = await res.text();
 
     return {
+      statusCode: res.status,
       status: res.ok,
       message: res.ok ? "ok" : data.message || data.detail,
       data: data,
