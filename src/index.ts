@@ -10,11 +10,13 @@ class Mailjs {
   private token: string;
   id: string;
   address: string;
+  rateLimitRetries: number;
 
-  constructor() {
+  constructor({ rateLimitRetries }: { rateLimitRetries?: number } = {}) {
     this.baseUrl = "https://api.mail.tm";
     this.baseMercure = "https://mercure.mail.tm/.well-known/mercure";
     this.listener = null;
+    this.rateLimitRetries = rateLimitRetries || 3;
     this.events = {};
     this.token = "";
     this.id = "";
@@ -235,7 +237,8 @@ class Mailjs {
   async _send(
     path: string,
     method: type.Methods = "GET",
-    body?: object
+    body?: object,
+    retry: number = 0
   ): type.PromiseResult<any> {
     const options: type.IRequestObject = {
       method,
@@ -252,6 +255,12 @@ class Mailjs {
     }
 
     const res: Response = await fetch(this.baseUrl + path, options);
+
+    if (res.status === 429 && retry < this.rateLimitRetries) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return this._send(path, method, body, retry + 1);
+    }
+
     let data: any;
 
     const contentType = res.headers.get("content-type");
