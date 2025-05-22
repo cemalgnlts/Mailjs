@@ -8,10 +8,11 @@ class Mailjs {
   private baseMercure: string;
   private listener: any;
   private token: string;
+  private rateLimitRetries: number;
   id: string;
   address: string;
 
-  constructor() {
+  constructor({ rateLimitRetries }: { rateLimitRetries?: number } = {}) {
     this.baseUrl = "https://api.mail.tm";
     this.baseMercure = "https://mercure.mail.tm/.well-known/mercure";
     this.listener = null;
@@ -19,6 +20,7 @@ class Mailjs {
     this.token = "";
     this.id = "";
     this.address = "";
+    this.rateLimitRetries = rateLimitRetries ?? 3;
   }
 
   // Account
@@ -76,10 +78,19 @@ class Mailjs {
   }
 
   /** Deletes the Account resource. */
-  deleteAccount(accountId: string): type.DeleteResult {
-    this.off();
+  async deleteAccount(accountId: string): type.DeleteResult {
+    const delRes = await this._send("/accounts/" + accountId, "DELETE");
 
-    return this._send("/accounts/" + accountId, "DELETE");
+    if (delRes.status) {
+      this.off();
+      this.token = "";
+      this.id = "";
+      this.address = "";
+      this.listener = null;
+      this.events = {};
+    }
+
+    return delRes;
   }
 
   /** Deletes the logged in account. */
@@ -131,9 +142,14 @@ class Mailjs {
   // Events
 
   /** Open an event listener to messages and error */
-  on(event: "seen" | "delete" | "arrive" | "error" | "open", callback: type.MessageCallback | type.EmptyCallback | type.SSEErrorEvent) {
+  on(
+    event: "seen" | "delete" | "arrive" | "error" | "open",
+    callback: type.MessageCallback | type.EmptyCallback | type.SSEErrorEvent
+  ) {
     if (!EventSource) {
-      console.error("EventSourcePolyfill is required for this feature. https://github.com/cemalgnlts/Mailjs/#quickstart");
+      console.error(
+        "EventSourcePolyfill is required for this feature. https://github.com/cemalgnlts/Mailjs/#quickstart"
+      );
       return;
     }
 
@@ -144,15 +160,18 @@ class Mailjs {
     }
 
     if (!this.listener) {
-      this.listener = new EventSource(`${this.baseMercure}?topic=/accounts/${this.id}`, {
-        headers: { "Authorization": `Bearer ${this.token}` }
-      });
+      this.listener = new EventSource(
+        `${this.baseMercure}?topic=/accounts/${this.id}`,
+        {
+          headers: { Authorization: `Bearer ${this.token}` },
+        }
+      );
 
       this.events = {
-        arrive: () => { },
-        seen: () => { },
-        delete: () => { },
-        error: () => { }
+        arrive: () => {},
+        seen: () => {},
+        delete: () => {},
+        error: () => {},
       };
 
       const onMessage = (msg: type.SSEMessageEvent) => {
@@ -196,6 +215,7 @@ class Mailjs {
   async createOneAccount(): type.CreateOneAccountResult {
     // 1) Get a domain name.
     let domain: any = await this.getDomains();
+
     if (!domain.status) return domain;
     else domain = domain.data[0].domain;
 
@@ -205,16 +225,17 @@ class Mailjs {
     // 3) Generate a password and register.
     const password = this._makeHash(8);
     let registerRes: any = await this.register(username, password);
+
     if (!registerRes.status) return registerRes;
-    else registerRes = registerRes.data;
 
     // 4) Login.
     let loginRes: any = await this.login(username, password);
+
     if (!loginRes.status) return loginRes;
-    else loginRes = loginRes.data;
 
     return {
       status: true,
+      statusCode: loginRes.statusCode,
       message: "ok",
       data: {
         username,
@@ -226,7 +247,8 @@ class Mailjs {
   /** @private */
   _makeHash(size: number) {
     const charset = "abcdefghijklmnopqrstuvwxyz0123456789";
-    const select = () => charset.charAt(Math.floor(Math.random() * charset.length));
+    const select = () =>
+      charset.charAt(Math.floor(Math.random() * charset.length));
 
     return Array.from({ length: size }, select).join("");
   }
@@ -235,7 +257,8 @@ class Mailjs {
   async _send(
     path: string,
     method: type.Methods = "GET",
-    body?: object
+    body?: object,
+    retry = 0
   ): type.PromiseResult<any> {
     const options: type.IRequestObject = {
       method,
@@ -254,6 +277,11 @@ class Mailjs {
     const res: Response = await fetch(this.baseUrl + path, options);
     let data: any;
 
+    if (res.status === 429 && retry < this.rateLimitRetries) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return this._send(path, method, body, retry + 1);
+    }
+
     const contentType = res.headers.get("content-type");
 
     if (contentType?.startsWith("application/json")) data = await res.json();
@@ -261,13 +289,11 @@ class Mailjs {
 
     return {
       status: res.ok,
+      statusCode: res.status,
       message: res.ok ? "ok" : data.message || data.detail,
       data: data,
     };
   }
 }
 
-
 export default Mailjs;
-
-const mailjs = new Mailjs();

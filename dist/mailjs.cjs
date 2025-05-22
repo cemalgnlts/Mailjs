@@ -8,9 +8,10 @@ class Mailjs {
     baseMercure;
     listener;
     token;
+    rateLimitRetries;
     id;
     address;
-    constructor() {
+    constructor({ rateLimitRetries } = {}) {
         this.baseUrl = "https://api.mail.tm";
         this.baseMercure = "https://mercure.mail.tm/.well-known/mercure";
         this.listener = null;
@@ -18,6 +19,7 @@ class Mailjs {
         this.token = "";
         this.id = "";
         this.address = "";
+        this.rateLimitRetries = rateLimitRetries ?? 3;
     }
     // Account
     /** Creates an Account resource. */
@@ -61,9 +63,17 @@ class Mailjs {
         return this._send("/accounts/" + accountId);
     }
     /** Deletes the Account resource. */
-    deleteAccount(accountId) {
-        this.off();
-        return this._send("/accounts/" + accountId, "DELETE");
+    async deleteAccount(accountId) {
+        const delRes = await this._send("/accounts/" + accountId, "DELETE");
+        if (delRes.status) {
+            this.off();
+            this.token = "";
+            this.id = "";
+            this.address = "";
+            this.listener = null;
+            this.events = {};
+        }
+        return delRes;
     }
     /** Deletes the logged in account. */
     deleteMe() {
@@ -114,13 +124,13 @@ class Mailjs {
         }
         if (!this.listener) {
             this.listener = new EventSource(`${this.baseMercure}?topic=/accounts/${this.id}`, {
-                headers: { "Authorization": `Bearer ${this.token}` }
+                headers: { Authorization: `Bearer ${this.token}` },
             });
             this.events = {
                 arrive: () => { },
                 seen: () => { },
                 delete: () => { },
-                error: () => { }
+                error: () => { },
             };
             const onMessage = (msg) => {
                 let data = JSON.parse(msg.data);
@@ -168,16 +178,13 @@ class Mailjs {
         let registerRes = await this.register(username, password);
         if (!registerRes.status)
             return registerRes;
-        else
-            registerRes = registerRes.data;
         // 4) Login.
         let loginRes = await this.login(username, password);
         if (!loginRes.status)
             return loginRes;
-        else
-            loginRes = loginRes.data;
         return {
             status: true,
+            statusCode: loginRes.statusCode,
             message: "ok",
             data: {
                 username,
@@ -192,7 +199,7 @@ class Mailjs {
         return Array.from({ length: size }, select).join("");
     }
     /** @private */
-    async _send(path, method = "GET", body) {
+    async _send(path, method = "GET", body, retry = 0) {
         const options = {
             method,
             headers: {
@@ -207,6 +214,10 @@ class Mailjs {
         }
         const res = await fetch(this.baseUrl + path, options);
         let data;
+        if (res.status === 429 && retry < this.rateLimitRetries) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            return this._send(path, method, body, retry + 1);
+        }
         const contentType = res.headers.get("content-type");
         if (contentType?.startsWith("application/json"))
             data = await res.json();
@@ -214,6 +225,7 @@ class Mailjs {
             data = await res.text();
         return {
             status: res.ok,
+            statusCode: res.status,
             message: res.ok ? "ok" : data.message || data.detail,
             data: data,
         };

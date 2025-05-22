@@ -26,7 +26,7 @@ test("Log in with JWT token.", async () => {
 
     const { status, message } = await mailjs.loginWithToken(token);
 
-    if(!status) throw message;
+    if (!status) throw message;
 });
 
 test("Test listener.", (_, done) => {
@@ -39,6 +39,14 @@ test("Test listener.", (_, done) => {
 
     mailjs.on("open", onOpen);
     mailjs.on("error", onError);
+});
+
+test("Rate limit exceeding.", async () => {
+    for (let i = 0; i < 10; i++) {
+        const { statusCode } = await mailjs.getMessages();
+
+        if (statusCode === 429) throw Error("A rate limit error occurred.");
+    }
 });
 
 test("Delete account.", async () => {

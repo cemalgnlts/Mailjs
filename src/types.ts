@@ -59,10 +59,10 @@ interface IMessagesResult {
     address: string;
     name: string;
   };
-  to: {
+  to: Array<{
     address: string;
     name: string;
-  };
+  }>;
   subject: string;
   intro: string;
   seen: boolean;
@@ -148,6 +148,7 @@ export interface IRequestObject {
  */
 interface IResult<T> {
   status: boolean;
+  statusCode: number;
   message: string;
   data: T;
 }

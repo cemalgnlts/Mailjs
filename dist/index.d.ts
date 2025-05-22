@@ -5,9 +5,12 @@ declare class Mailjs {
     private baseMercure;
     private listener;
     private token;
+    private rateLimitRetries;
     id: string;
     address: string;
-    constructor();
+    constructor({ rateLimitRetries }?: {
+        rateLimitRetries?: number;
+    });
     /** Creates an Account resource. */
     register(address: string, password: string): type.RegisterResult;
     /** Get an Account resource by its id. */
@@ -45,6 +48,6 @@ declare class Mailjs {
     /** @private */
     _makeHash(size: number): string;
     /** @private */
-    _send(path: string, method?: type.Methods, body?: object): type.PromiseResult<any>;
+    _send(path: string, method?: type.Methods, body?: object, retry?: number): type.PromiseResult<any>;
 }
 export default Mailjs;
