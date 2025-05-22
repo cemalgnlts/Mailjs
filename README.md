@@ -8,6 +8,9 @@ Probably one of the best API for creating temporary email accounts.
 * It is forbidden to sell programs or earn from it that exclusively uses our API (for example, creating a competing temp mail client and charging for it's usage).
 * The general quota limit is 8 queries per second (QPS) per IP address.
 
+
+> If your goal is to test your emails, check out [smpt.dev](https://smtp.dev/) for more tools.
+
 # Installation
 
 **npm**
@@ -21,7 +24,7 @@ yarn add @cemalgnlts/mailjs
 ```
 
 **CDN**
-```
+```html
 <!-- It is only needed to listen to new messages. -->
 <script src="https://cdn.jsdelivr.net/gh/cemalgnlts/Mailjs@3.0.0/eventsource.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@cemalgnlts/mailjs@3.0.0/dist/mailjs.min.js"></script>
@@ -62,13 +65,20 @@ For more reference visit [/examples](/examples) directory.
 
 # Documentation
 
-Returns a Promise object after the function is called. If the request is sent correctly, `status` returns true. If it returns incorrect, the `status` will be false and the `message` in the data is also added. If there is no error, `status` always returns `true`.
+Returns a Promise object after the function is called. If the request is sent correctly, `status` returns `true`.
+
+ If it returns incorrect, the `status` will be `false` and the `message` in the data is also added.
+
+If there is no error, `status` always returns `true`.
+
+With `statusCode` you can access the status code returned as a result of the request. `statusCode` is only for debugging, just look at `status` to see if an error has occurred.
 
 A successfull response example:
 
 ```json
 {
   "status": true,
+  "statusCode": 200,
   "message": "ok",
   "data": {}
 }
@@ -79,6 +89,7 @@ A failed response example:
 ```json
 {
   "status": false,
+  "statusCode": 410,
   "message": "Invalid credentials.",
   "data": {}
 }
@@ -107,9 +118,25 @@ To see all results, check out the API page: [https://api.mail.tm/](https://api.m
 User needs to login to access JWT token. Registration does not return this information, log in after registration.
 
 
-After the login process, the user's JWT token and ID are assigned to `mailjs.token` and `mailjs.id`
+After the login process, the user's JWT token and ID are assigned to `mailjs.token` and `mailjs.id`.
 
 ---
+
+## Constructor
+
+The general quota limit is 8 queries per second (QPS) per IP address. But this may change over time. If a timeout error occurs, the library waits 1 second and repeats the request. If after 3 attempts the problem is not solved, it throws an error. 
+
+To turn this off or increase the number of attempts, specify this with `rateLimitRetries` when creating the constructor object. Default value is **3**.
+
+Disable it:
+```js
+const mailjs = new Mailjs({ rateLimitRetries: 0 });
+```
+
+Or if a timeout error occurs, try 5 times waiting 1 second each:
+```js
+const mailjs = new Mailjs({ rateLimitRetries: 5 });
+```
 
 ## Domain
 
