@@ -130,9 +130,10 @@ class Mailjs {
                 delete: () => { },
                 error: () => { },
             };
-            const onMessage = (msg) => {
+            const onMessage = async (msg) => {
                 let data = JSON.parse(msg.data);
                 // We don't want account details.
+                // This event is triggered when an account is created or deleted.
                 if (data["@type"] === "Account")
                     return;
                 let eventType = "arrive";
@@ -140,7 +141,16 @@ class Mailjs {
                     eventType = "delete";
                 else if (data.seen)
                     eventType = "seen";
-                this.events[eventType](data);
+                // Sometimes the SSE server gives an error and the number 2 is returned
+                // instead of an object. If this happens, we receive message manually.
+                // GitHub issues: #23, #24
+                if (eventType === "arrive" && !data["@type"]) {
+                    const listRes = await this.getMessages();
+                    if (!listRes.status)
+                        this.events["error"]?.(listRes.message);
+                    data = listRes.data[0];
+                }
+                this.events[eventType]?.(data);
             };
             const onError = (err) => {
                 this.events["error"](err);
