@@ -1,5 +1,5 @@
 import EventSource from "eventsource";
-import { randomUUID } from "node:crypto"
+import { randomBytes, randomUUID } from "node:crypto"
 
 import type * as type from "./types.ts";
 
@@ -236,7 +236,7 @@ class Mailjs {
     const username = `${randomUUID()}@${domain}`;
 
     // 3) Generate a password and register.
-    const password = this._makeHash(8);
+    const password = randomBytes(8).toString('hex');
     let registerRes: any = await this.register(username, password);
 
     if (!registerRes.status) return registerRes;
@@ -255,15 +255,6 @@ class Mailjs {
         password,
       },
     };
-  }
-
-  /** @private */
-  _makeHash(size: number) {
-    const charset = "abcdefghijklmnopqrstuvwxyz0123456789";
-    const select = () =>
-      charset.charAt(Math.floor(Math.random() * charset.length));
-
-    return Array.from({ length: size }, select).join("");
   }
 
   /** @private */
