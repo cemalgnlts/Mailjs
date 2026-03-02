@@ -1,4 +1,5 @@
 import EventSource from "eventsource";
+import { randomUUID } from "node:crypto"
 
 import type * as type from "./types.ts";
 
@@ -232,7 +233,7 @@ class Mailjs {
     else domain = domain.data[0].domain;
 
     // 2) Generate a username (test@domain.com).
-    const username = `${this._makeHash(5)}@${domain}`;
+    const username = `${randomUUID()}@${domain}`;
 
     // 3) Generate a password and register.
     const password = this._makeHash(8);
