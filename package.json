@@ -38,6 +38,7 @@
   },
   "homepage": "https://github.com/cemalgnlts/Mailjs#readme",
   "dependencies": {
+    "@types/node": "^25.3.3",
     "eventsource": "^2.0.2"
   },
   "devDependencies": {
