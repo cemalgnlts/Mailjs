@@ -4,7 +4,7 @@ import terser from "@rollup/plugin-terser";
 /** @type {import("rollup").RollupOptions} */
 export default {
 	input: "src/index.ts",
-	external: ["node-fetch", "eventsource"],
+	external: ["eventsource", "node:crypto"],
 	plugins: [typescript({ tsconfig: "./tsconfig.json" })],
 	output: [
 		{
@@ -21,7 +21,10 @@ export default {
 			format: "iife",
 			name: "Mailjs",
 			interop: "default",
-			globals: { "eventsource": "window.EventSourcePolyfill" },
+			globals: {
+                "eventsource": "window.EventSourcePolyfill",
+                "node:crypto": "crypto"
+            },
 			plugins: [terser()]
 		}
 	],

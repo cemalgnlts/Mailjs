@@ -1,5 +1,5 @@
 import EventSource from "eventsource";
-import { randomBytes, randomUUID } from "node:crypto"
+import { getRandomValues, randomUUID } from "node:crypto";
 
 import type * as type from "./types.ts";
 
@@ -145,11 +145,11 @@ class Mailjs {
   /** Open an event listener to messages and error */
   on(
     event: "seen" | "delete" | "arrive" | "error" | "open",
-    callback: type.MessageCallback | type.EmptyCallback | type.SSEErrorEvent
+    callback: type.MessageCallback | type.EmptyCallback | type.SSEErrorEvent,
   ) {
     if (!EventSource) {
       console.error(
-        "EventSourcePolyfill is required for this feature. https://github.com/cemalgnlts/Mailjs/#quickstart"
+        "EventSourcePolyfill is required for this feature. https://github.com/cemalgnlts/Mailjs/#quickstart",
       );
       return;
     }
@@ -165,7 +165,7 @@ class Mailjs {
         `${this.baseMercure}?topic=/accounts/${this.id}`,
         {
           headers: { Authorization: `Bearer ${this.token}` },
-        }
+        },
       );
 
       this.events = {
@@ -225,7 +225,9 @@ class Mailjs {
   // Helper
 
   /** Create random account. */
-  async createOneAccount(): type.CreateOneAccountResult {
+  async createOneAccount(
+    useUUID: boolean = false,
+  ): type.CreateOneAccountResult {
     // 1) Get a domain name.
     let domain: any = await this.getDomains();
 
@@ -233,10 +235,10 @@ class Mailjs {
     else domain = domain.data[0].domain;
 
     // 2) Generate a username (test@domain.com).
-    const username = `${randomUUID()}@${domain}`;
+    const username = `${useUUID ? randomUUID() : this._generateHash(8)}@${domain}`;
 
     // 3) Generate a password and register.
-    const password = randomBytes(8).toString('hex');
+    const password = this._generateHash(8);
     let registerRes: any = await this.register(username, password);
 
     if (!registerRes.status) return registerRes;
@@ -257,12 +259,18 @@ class Mailjs {
     };
   }
 
+  _generateHash(size: number) {
+    return Array.from(getRandomValues(new Uint8Array(size)), (val) =>
+      val.toString(16).padStart(2, "0"),
+    ).join("");
+  }
+
   /** @private */
   async _send(
     path: string,
     method: type.Methods = "GET",
     body?: object,
-    retry = 0
+    retry = 0,
   ): type.PromiseResult<any> {
     const options: type.IRequestObject = {
       method,

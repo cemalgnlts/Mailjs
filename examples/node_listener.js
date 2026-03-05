@@ -12,6 +12,9 @@ if (!acc.status) throw res.message;
 username = acc.data.username;
 
 mailjs.on("open", onOpen);
+mailjs.on("error", err => {
+  throw err;
+});
 mailjs.on("arrive", onNewMessage);
 
 function onOpen() {

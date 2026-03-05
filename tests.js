@@ -35,7 +35,9 @@ test("Test listener.", (_, done) => {
         done();
     };
 
-    const onError = err => done(err);
+    const onError = (err) => {
+        throw err;
+    }
 
     mailjs.on("open", onOpen);
     mailjs.on("error", onError);

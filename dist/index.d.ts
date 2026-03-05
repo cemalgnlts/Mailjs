@@ -44,9 +44,8 @@ declare class Mailjs {
     /** Clears the events and safely closes event listener. */
     off(): void;
     /** Create random account. */
-    createOneAccount(): type.CreateOneAccountResult;
-    /** @private */
-    _makeHash(size: number): string;
+    createOneAccount(useUUID?: boolean): type.CreateOneAccountResult;
+    _generateHash(size: number): string;
     /** @private */
     _send(path: string, method?: type.Methods, body?: object, retry?: number): type.PromiseResult<any>;
 }

@@ -1,6 +1,7 @@
 'use strict';
 
 var EventSource = require('eventsource');
+var node_crypto = require('node:crypto');
 
 class Mailjs {
     events;
@@ -174,7 +175,7 @@ class Mailjs {
     }
     // Helper
     /** Create random account. */
-    async createOneAccount() {
+    async createOneAccount(useUUID = false) {
         // 1) Get a domain name.
         let domain = await this.getDomains();
         if (!domain.status)
@@ -182,9 +183,9 @@ class Mailjs {
         else
             domain = domain.data[0].domain;
         // 2) Generate a username (test@domain.com).
-        const username = `${this._makeHash(5)}@${domain}`;
+        const username = `${useUUID ? node_crypto.randomUUID() : this._generateHash(8)}@${domain}`;
         // 3) Generate a password and register.
-        const password = this._makeHash(8);
+        const password = this._generateHash(8);
         let registerRes = await this.register(username, password);
         if (!registerRes.status)
             return registerRes;
@@ -202,11 +203,8 @@ class Mailjs {
             },
         };
     }
-    /** @private */
-    _makeHash(size) {
-        const charset = "abcdefghijklmnopqrstuvwxyz0123456789";
-        const select = () => charset.charAt(Math.floor(Math.random() * charset.length));
-        return Array.from({ length: size }, select).join("");
+    _generateHash(size) {
+        return Array.from(node_crypto.getRandomValues(new Uint8Array(size)), (val) => val.toString(16).padStart(2, "0")).join("");
     }
     /** @private */
     async _send(path, method = "GET", body, retry = 0) {

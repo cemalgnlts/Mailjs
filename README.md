@@ -278,7 +278,9 @@ mailjs.getSource("[message id]")
 
 ### Create random account.
 
-Creates and logs in an account with a random username and password.
+`mailjs.createOneAccount(useUUID: boolean = false)`
+
+Creates and logs in an account with a random username and password. The same email address can be used during automatic email creation. To prevent this, you can use a UUID as the email address: `mailjs.createOneAccount(true)`
 
 ```js
 mailjs.createOneAccount()
