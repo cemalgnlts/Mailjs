@@ -10,11 +10,13 @@ class Mailjs {
     listener;
     token;
     rateLimitRetries;
+    headers;
     id;
     address;
-    constructor({ rateLimitRetries } = {}) {
-        this.baseUrl = "https://api.mail.tm";
-        this.baseMercure = "https://mercure.mail.tm/.well-known/mercure";
+    constructor({ baseUrl, baseMercure, headers, rateLimitRetries, } = {}) {
+        this.baseUrl = baseUrl ?? "https://api.mail.tm";
+        this.baseMercure = baseMercure ?? "https://mercure.mail.tm/.well-known/mercure";
+        this.headers = headers ?? {};
         this.listener = null;
         this.events = {};
         this.token = "";
@@ -174,33 +176,65 @@ class Mailjs {
         this.listener = null;
     }
     // Helper
-    /** Create random account. */
-    async createOneAccount(useUUID = false) {
-        // 1) Get a domain name.
-        let domain = await this.getDomains();
-        if (!domain.status)
-            return domain;
-        else
-            domain = domain.data[0].domain;
-        // 2) Generate a username (test@domain.com).
-        const username = `${useUUID ? node_crypto.randomUUID() : this._generateHash(8)}@${domain}`;
-        // 3) Generate a password and register.
-        const password = this._generateHash(8);
-        let registerRes = await this.register(username, password);
+    /**
+     * Create a random account.
+     *
+     * Backwards compatible: pass `true`/`false` for the legacy useUUID flag.
+     * Or pass an options object:
+     *   - `domain` skips the getDomains() API call entirely
+     *   - `name` sets the exact local-part (overrides prefix/hashSize/useUUID)
+     *   - `prefix` + `hashSize` build a `<prefix><randomHex>` local-part
+     *   - `password` overrides the auto-generated one
+     */
+    async createOneAccount(options = false) {
+        const opts = typeof options === "boolean" ? { useUUID: options } : options;
+        // 1) Domain — caller-supplied wins; otherwise hit /domains once.
+        let domain = opts.domain;
+        if (!domain) {
+            const list = await this.getDomains();
+            if (!list.status)
+                return list;
+            const items = Array.isArray(list.data) ? list.data : [];
+            if (items.length === 0) {
+                return {
+                    status: false,
+                    statusCode: 0,
+                    message: "No domains available",
+                    data: { username: "", password: "" },
+                };
+            }
+            domain = items[0].domain;
+        }
+        // 2) Local-part: explicit name > prefix+hash > UUID > random hex.
+        const hashSize = opts.hashSize ?? 8;
+        let local;
+        if (opts.name) {
+            local = opts.name;
+        }
+        else if (opts.prefix) {
+            local = `${opts.prefix}${this._generateHash(hashSize)}`;
+        }
+        else if (opts.useUUID) {
+            local = node_crypto.randomUUID();
+        }
+        else {
+            local = this._generateHash(hashSize);
+        }
+        const username = `${local}@${domain}`;
+        // 3) Password.
+        const password = opts.password ?? this._generateHash(8);
+        // 4) Register + login.
+        const registerRes = await this.register(username, password);
         if (!registerRes.status)
             return registerRes;
-        // 4) Login.
-        let loginRes = await this.login(username, password);
+        const loginRes = await this.login(username, password);
         if (!loginRes.status)
             return loginRes;
         return {
             status: true,
             statusCode: loginRes.statusCode,
             message: "ok",
-            data: {
-                username,
-                password,
-            },
+            data: { username, password },
         };
     }
     _generateHash(size) {
@@ -215,6 +249,7 @@ class Mailjs {
                 authorization: `Bearer ${this.token}`,
             },
         };
+        Object.assign(options.headers, this.headers);
         if (method === "POST" || method === "PATCH") {
             const contentType = method === "PATCH" ? "merge-patch+json" : "json";
             options.headers["content-type"] = `application/${contentType}`;
