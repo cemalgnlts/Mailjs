@@ -9,7 +9,7 @@ Probably one of the best API for creating temporary email accounts.
 * The general quota limit is 8 queries per second (QPS) per IP address.
 
 
-> If your goal is to test your emails, check out [smpt.dev](https://smtp.dev/) for more tools.
+> If your goal is to test your emails, check out [smtp.dev](https://smtp.dev/) for more tools.
 
 # Installation
 
