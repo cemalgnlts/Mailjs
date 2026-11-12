@@ -130,6 +130,21 @@ export type CreateOneAccountResult = PromiseResult<{
   password: string;
 }>;
 
+export interface CreateOneAccountOptions {
+  /** Use UUID v4 instead of a random hex local-part. Ignored when `name` is set. */
+  useUUID?: boolean;
+  /** Exact local-part. When set, `prefix`/`hashSize`/`useUUID` are ignored. */
+  name?: string;
+  /** Local-part prefix; a random hex suffix of `hashSize` bytes is appended. */
+  prefix?: string;
+  /** Random suffix size in bytes (becomes 2× hex chars). Default 8. */
+  hashSize?: number;
+  /** Fixed domain. When set, getDomains() is NOT called. */
+  domain?: string;
+  /** Override the auto-generated password. */
+  password?: string;
+}
+
 /**
  * Request object
  */
